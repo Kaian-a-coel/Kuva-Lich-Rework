@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <script src="Lich_rework.js"></script>
+
+    <title>Lich rework</title>
+
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Michroma&amp;subset=latin,latin-ext">
+
+    <link rel="stylesheet" href="lich_rework.css">
+</head>
+
+<body>
+
+    <div id="topBar">
+        <input type="button" value="Starmap" id="starmapTab" onclick="switchTabs('starMap')">
+        <input type="button" value="Requiem" id="requiemTab" onclick="switchTabs('requiem')">
+        <input type="button" value="Lich Assets" id="lichAssetsTab" onclick="switchTabs('lichAssets')">
+        <input type="button" value="Intel missions" id="intelMissionsTab" onclick="switchTabs('intelMissions')">
+        <span id="intelDisplay"> Intel: 0</span>
+        <span id="dayCounter"> Day: 0</span>
+        <input type="button" value="Next Day" onclick="dailyTick()">
+    </div>
+
+
+
+    <div class="main">
+
+        <div id="lichSidebar">
+            <h2>KUVA LICH </h2>
+
+
+
+            <div id="lichCreate">
+                You currently do not have an active lich. <br>
+
+                <button id="lichCreateButton" value="CREATE LICH" onclick="createLich()">
+                    <span>
+                        CREATE LICH
+                    </span>
+                </button>
+            </div>
+
+            <div id="lichInfo" hidden>
+                <img src="#" alt="(Pretend there is a pic here)">
+
+                <table id=lichStats>
+                    <tr>
+                        <td><label for="lichRank">Rank: </label></td>
+                        <td><input type="text" name="lichRank" id="lichRank" readonly></td>
+                    </tr>
+                    <tr>
+                        <td><label for="lichXP">Experience</label></td>
+                        <td><input type="text" name="lichXP" id="lichXP" readonly></td>
+                    </tr>
+                    <tr>
+                        <td><label for="lichAnger">Anger</label></td>
+                        <td><input type="text" name="lichAnger" id="lichAnger" readonly></td>
+                    </tr>
+                    <tr>
+                        <td><label for="lichName">Name</label></td>
+                        <td><input type="text" name="lichName" id="lichName" readonly></td>
+                    </tr>
+                    <tr>
+                        <td><label for="lichGender">Gender</label></td>
+                        <td><input type="text" name="lichGender" id="lichGender" readonly></td>
+                    </tr>
+                    <tr>
+                        <td><label for="lichWeapon">Weapon</label></td>
+                        <td><input type="text" name="lichWeapon" id="lichWeapon" readonly></td>
+                    </tr>
+                    <tr>
+                        <td><label for="isLockBroken"></label></td>
+                        <td><span type="text" name="isLockBroken" id="isLockBroken" readonly></span></td>
+                    </tr>
+
+                    <tr>
+                        <td><label for="lichElement">Element</label></td>
+                        <td><input type="text" name="lichElement" id="lichElement" readonly></td>
+                    </tr>
+                </table>
+                <!--[DEBUG]Requiem: <input type="text" name="requiem" id="debugRequiem">-->
+            </div>
+        </div>
+
+
+        <div class="content">
+            <div id="starMap">
+                <table id="MercuryMap">
+                    <tr>
+                        <td>MERCURY</td>
+                        <td colspan="3"></td>
+                        <td><input type="button" value="Tolstoj" onclick="basicMission('Tolstoj')"><br>
+                            <input type="button" value="Expel Lich" id="TolstojExpel" onclick="expelMission('Tolstoj')"
+                                hidden>
+                        </td>
+                        <input type="button" value="LAST STAND" id="lastStand" onclick="lastStand()" hidden>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="Purge" onclick="purgePlanet('Mercury')"></td>
+                        <td colspan="3"></td>
+                        <td>|</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td><input type="button" value="Suisei" onclick="basicMission('Suisei')"><br>
+                            <input type="button" value="Expel Lich" id="SuiseiExpel" onclick="expelMission('Suisei')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Odin" onclick="basicMission('Odin')"><br>
+                            <input type="button" value="Expel Lich" id="OdinExpel" onclick="expelMission('Odin')"
+                                hidden>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td>|</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><input type="button" value="Lares" onclick="basicMission('Lares')"><br>
+                            <input type="button" value="Expel Lich" id="LaresExpel" onclick="expelMission('Lares')"
+                                hidden>
+                        </td>
+                        <td></td>
+                        <td><input type="button" value="Elion" onclick="basicMission('Elion')"><br>
+                            <input type="button" value="Expel Lich" id="ElionExpel" onclick="expelMission('Elion')"
+                                hidden>
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td>|</td>
+                        <td></td>
+                        <td>|</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="Appolodorus" onclick="basicMission('Appolodorus')"><br>
+                            <input type="button" value="Expel Lich" id="AppolodorusExpel"
+                                onclick="expelMission('Appolodorus')" hidden></td>
+                        <td></td>
+                        <td><input type="button" value="Terminus" onclick="basicMission('Terminus')"><br>
+                            <input type="button" value="Expel Lich" id="TerminusExpel"
+                                onclick="expelMission('Terminus')" hidden></td>
+                        <td></td>
+                        <td><input type="button" value="Caloris" onclick="basicMission('Caloris')"><br>
+                            <input type="button" value="Expel Lich" id="CalorisExpel" onclick="expelMission('Caloris')"
+                                hidden>
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td>|</td>
+                        <td></td>
+                        <td>|</td>
+                        <td></td>
+                        <td>|</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="Boethius" onclick="basicMission('Boethius')"><br>
+                            <input type="button" value="Expel Lich" id="BoethiusExpel"
+                                onclick="expelMission('Boethius')" hidden></td>
+                        <td>---</td>
+                        <td><input type="button" value="M_prime" onclick="basicMission('M_prime')"><br>
+                            <input type="button" value="Expel Lich" id="M_primeExpel" onclick="expelMission('M_prime')"
+                                hidden>
+                        </td>
+                        <td></td>
+                        <td><input type="button" value="Pantheon" onclick="basicMission('Pantheon')"><br>
+                            <input type="button" value="Expel Lich" id="PantheonExpel"
+                                onclick="expelMission('Pantheon')" hidden></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td>|__</td>
+                        <td><input type="button" value="To Venus" onclick="switchPlanet('Mercury', 'Venus')"></td>
+                        <td>__|</td>
+                        <td colspan="2"></td>
+                    </tr>
+                </table>
+
+                <table id="VenusMap" hidden>
+                    <tr>
+                        <td>VENUS</td>
+                        <td colspan="5"></td>
+                        <td><input type="button" value="To Mercury" onclick="switchPlanet('Venus', 'Mercury')"></td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="Purge" onclick="purgePlanet('Venus')"></td>
+                        <td colspan="5"></td>
+                        <td>|</td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><input type="button" value="Cytherean" onclick="basicMission('Cytherean')"><br>
+                            <input type="button" value="Expel Lich" id="CythereanExpel"
+                                onclick="expelMission('Cytherean')" hidden></td>
+                        <td>---</td>
+                        <td><input type="button" value="Kiliken" onclick="basicMission('Kiliken')"><br>
+                            <input type="button" value="Expel Lich" id="KilikenExpel" onclick="expelMission('Kiliken')"
+                                hidden>
+
+                            <input type="button" value="Expel Lich" id="KilikenExpel" onclick="expelMission('Kiliken')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Aphrodite" onclick="basicMission('Aphrodite')"><br>
+                            <input type="button" value="Expel Lich" id="AphroditeExpel"
+                                onclick="expelMission('Aphrodite')" hidden></td>
+                        <td>---</td>
+                        <td><input type="button" value="Fossa" onclick="basicMission('Fossa')"><br>
+                            <input type="button" value="Expel Lich" id="FossaExpel" onclick="expelMission('Fossa')"
+                                hidden>
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td>|</td>
+                        <td></td>
+                        <td>|</td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><input type="button" value="Fortuna" onclick="basicMission('Fortuna')"><br>
+                            <input type="button" value="Expel Lich" id="FortunaExpel" onclick="expelMission('Fortuna')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Unda" onclick="basicMission('Unda')"><br>
+                            <input type="button" value="Expel Lich" id="UndaExpel" onclick="expelMission('Unda')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Venera" onclick="basicMission('Venera')"><br>
+                            <input type="button" value="Expel Lich" id="VeneraExpel" onclick="expelMission('Venera')"
+                                hidden>
+                        </td>
+                        <td colspan="3"></td>
+                        <td><input type="button" value="Malva" onclick="basicMission('Malva')"><br>
+                            <input type="button" value="Expel Lich" id="MalvaExpel" onclick="expelMission('Malva')"
+                                hidden>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td>|</td>
+                        <td></td>
+                        <td>|</td>
+                        <td colspan="3"></td>
+                        <td>|</td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="Romula" onclick="basicMission('Romula')"><br>
+                            <input type="button" value="Expel Lich" id="RomulaExpel" onclick="expelMission('Romula')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="V_prime" onclick="basicMission('V_prime')"><br>
+                            <input type="button" value="Expel Lich" id="V_primeExpel" onclick="expelMission('V_prime')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="E_gate" onclick="basicMission('E_gate')"><br>
+                            <input type="button" value="Expel Lich" id="E_gateExpel" onclick="expelMission('E_gate')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Tessera" onclick="basicMission('Tessera')"><br>
+                            <input type="button" value="Expel Lich" id="TesseraExpel" onclick="expelMission('Tessera')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Linea" onclick="basicMission('Linea')"><br>
+                            <input type="button" value="Expel Lich" id="LineaExpel" onclick="expelMission('Linea')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Ishtar" onclick="basicMission('Ishtar')"><br>
+                            <input type="button" value="Expel Lich" id="IshtarExpel" onclick="expelMission('Ishtar')"
+                                hidden>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td>|</td>
+                        <td colspan="5"></td>
+                        <td>|</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td><input type="button" value="To Earth" onclick="switchPlanet('Venus', 'Earth')"></td>
+                        <td colspan="5"></td>
+                        <td><input type="button" value="Montes" onclick="basicMission('Montes')"><br>
+                            <input type="button" value="Expel Lich" id="MontesExpel" onclick="expelMission('Montes')"
+                                hidden>
+                        </td>
+                    </tr>
+                </table>
+                <table id="EarthMap" hidden>
+                    <tr>
+                        <td>EARTH</td>
+                        <td colspan="2"></td>
+                        <td>(to Mars)</td>
+                        <td colspan="6"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="Purge" onclick="purgePlanet('Earth')"></td>
+                        <td colspan="2"></td>
+                        <td>|</td>
+                        <td colspan="6"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"></td>
+                        <td><input type="button" value="Eurasia" onclick="basicMission('Eurasia')"><br>
+                            <input type="button" value="Expel Lich" id="EurasiaExpel" onclick="expelMission('Eurasia')"
+                                hidden>
+                        </td>
+                        <td></td>
+                        <td><input type="button" value="Coba" onclick="basicMission('Coba')"><br>
+                            <input type="button" value="Expel Lich" id="CobaExpel" onclick="expelMission('Coba')"
+                                hidden>
+                        </td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"></td>
+                        <td>|</td>
+                        <td></td>
+                        <td>|</td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="button" value="E_prime" onclick="basicMission('E_prime')"><br>
+                            <input type="button" value="Expel Lich" id="E_primeExpel" onclick="expelMission('E_prime')"
+                                hidden>
+                        </td>
+                        <td></td>
+                        <td><input type="button" value="Plains_of_eidolon"
+                                onclick="basicMission('Plains_of_eidolon')"><br>
+                            <input type="button" value="Expel Lich" id="Plains_of_eidolonExpel"
+                                onclick="expelMission('Plains_of_eidolon')" hidden></td>
+                        <td>---</td>
+                        <td><input type="button" value="Everest" onclick="basicMission('Everest')"><br>
+                            <input type="button" value="Expel Lich" id="EverestExpel" onclick="expelMission('Everest')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Cervantes" onclick="basicMission('Cervantes')"><br>
+                            <input type="button" value="Expel Lich" id="CervantesExpel"
+                                onclick="expelMission('Cervantes')" hidden></td>
+                        <td>---</td>
+                        <td><input type="button" value="Erpo" onclick="basicMission('Erpo')"><br>
+                            <input type="button" value="Expel Lich" id="ErpoExpel" onclick="expelMission('Erpo')"
+                                hidden>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>|</td>
+                        <td></td>
+                        <td>|</td>
+                        <td colspan="5"></td>
+                        <td>|</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="button" value="Mariana" onclick="basicMission('Mariana')"><br>
+                            <input type="button" value="Expel Lich" id="MarianaExpel" onclick="expelMission('Mariana')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Mantle" onclick="basicMission('Mantle')"><br>
+                            <input type="button" value="Expel Lich" id="MantleExpel" onclick="expelMission('Mantle')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Lith" onclick="basicMission('Lith')"><br>
+                            <input type="button" value="Expel Lich" id="LithExpel" onclick="expelMission('Lith')"
+                                hidden>
+                        </td>
+                        <td></td>
+                        <td><input type="button" value="Tikal" onclick="basicMission('Tikal')"><br>
+                            <input type="button" value="Expel Lich" id="TikalExpel" onclick="expelMission('Tikal')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Oro" onclick="basicMission('Oro')"><br>
+                            <input type="button" value="Expel Lich" id="OroExpel" onclick="expelMission('Oro')" hidden>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"></td>
+                        <td>|</td>
+                        <td></td>
+                        <td>|</td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="button" value="Pacific" onclick="basicMission('Pacific')"><br>
+                            <input type="button" value="Expel Lich" id="PacificExpel" onclick="expelMission('Pacific')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Gaia" onclick="basicMission('Gaia')"><br>
+                            <input type="button" value="Expel Lich" id="GaiaExpel" onclick="expelMission('Gaia')"
+                                hidden>
+                        </td>
+                        <td>---</td>
+                        <td><input type="button" value="Cambria" onclick="basicMission('Cambria')"><br>
+                            <input type="button" value="Expel Lich" id="CambriaExpel" onclick="expelMission('Cambria')"
+                                hidden>
+                        </td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5"></td>
+                        <td>|</td>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5"></td>
+                        <td><input type="button" value="To Venus" onclick="switchPlanet('Earth', 'Venus')"></td>
+                        <td colspan="4"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="requiem" hidden>
+                <div>
+                    Parazon mods: <br>
+                    <select name="firstParazonMod" id="firstParazonMod" onchange="updateParazon(this, 0)"></select>
+                    <select name="secondParazonMod" id="secondParazonMod" onchange="updateParazon(this, 1)"></select>
+                    <select name="thirdParazonMod" id="thirdParazonMod" onchange="updateParazon(this, 2)"></select>
+                    <!--[DEBUG]Requiem: <input type="text" name="requiemEquipped" id="debugRequiemEquipped">-->
+                </div>
+                -----------
+                <div>
+                    Requiem mods status:
+                    <div id="requiemModsStatusDisplay">
+                        <p id="modsUnknownDisplay"></p>
+                        <p id="modsIncorrectDisplay"></p>
+                        <p id="modsCorrectDisplay"></p>
+                    </div>
+                    <div id="lastStandAttemptsHistory">
+                        ____________________________________
+                    </div>
+                    Murmurs attempts history: <br>
+                    Note: a "correct" mod is one that is in the lich's requiem. The order of mods is not evaluated here.
+                    <br>
+                    <div id="murmurAttemptsHistory">
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="lichAssets" hidden>
+                <!--treasury list, and assets.-->
+                <div>
+                    TREASURY:
+                    <div id="treasuryDisplay">
+                        (nothing)
+                    </div>
+                </div>
+                ____________________________________
+                <div>
+                    ASSETS:
+                    <div id="assetsDisplay">
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="intelMissions" hidden>
+                <h1>
+                    MISSIONS:
+                </h1>
+                <br>
+                <div class="mission">
+                    <button class="redEdged">Normal mission</button>
+                    <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">0</span>
+                    <p class="missiondescription">
+                        Lich thralls and the lich itself can spawn in regular missions.
+                    </p>
+                    <span class="missiontypeLabel">
+                        Mission type:
+                    </span>
+                    <span class="missiontype">
+                        all.
+                    </span>
+                </div>
+                <div class="mission">
+                    <button class="redEdged" onclick="switchTabs('starMap')"
+                        title=" (on the starmap, pick a node)">Recon</button>
+                    <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">20</span>
+                    <p class="missiondescription">
+                        A swift attack on a local thrall cell, to remove the lich's influence from a node. Equivalent to
+                        the lich
+                        missions in the live game.
+                    </p>
+                    <span class="missiontypeLabel">
+                        Mission type:
+                    </span>
+                    <span class="missiontype">
+                        exterminate, sabotage...
+                    </span>
+
+                </div>
+                <div class="mission">
+                    <button class="redEdged" onclick="switchTabs('starMap')" disabled title=" (on the starmap, pick a planet that isn't the only one with lich influence) (NOTE: Not currently
+            implemented)">Purge</button>
+                    <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">high (scales with # of
+                        occupied nodes on planet)</span>
+                    <p class="missiondescription">
+                        A brutal, large scale offensive, targeted at the lich's HQ on a planet.
+                        Such a mission will be extremely difficult, but will remove a lich's influence from the whole
+                        planet. Cannot
+                        target a lich's only remaining planet.
+                    </p>
+                    <span class="missiontypeLabel">
+                        Mission type:
+                    </span>
+                    <span class="missiontype">
+                        survival, defense...
+                    </span>
+
+                </div>
+                <div class="mission">
+                    <button class="redEdged" onclick="reconMission()">Recon</button>
+                    <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">35</span>
+                    <p class="missiondescription">
+                        A discrete incursion aimed at acquiring a large amount of intel. If you need a lot of intel
+                        quickly, run
+                        this.
+                    </p>
+                    <span class="missiontypeLabel">
+                        Mission type:
+                    </span>
+                    <span class="missiontype">
+                        spy, mobile defense
+                    </span>
+                </div>
+                <div class="mission">
+                    <button class="redEdged" onclick="recoverLoot()">Plunder</button>
+                    <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">NA</span>
+                    <p class="missiondescription">
+                        A raid to recover loot from the Lich's treasury. Ideally, it should be possible to spend
+                        additional Intel to
+                        recover specific loot, but that is not
+                        implemented in this application.
+                    </p>
+                    <span class="missiontypeLabel">
+                        Mission type:
+                    </span>
+                    <span class="missiontype">
+                        spy, disruption, survival
+                    </span>
+                </div>
+                <div class="mission">
+                    <button class="redEdged" onclick="trackDownLich()">Track down</button>
+                    <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">70</span>
+                    <p class="missiondescription">
+                        The lich isn't the only one who can pull ambushes. Time to show them. Two possibilities:<br>
+                        Basic version: next mission is guaranteed to have a lich spawn. <br>
+                        Mission type: not a mission, but a modifier/flag.<br>
+                        Advanced version: spawns a crossfire mission where the lich is busy. New voice lines for the
+                        leech being
+                        ambushed. The latter is what is being simulated here.
+                    </p>
+                    <span class="missiontypeLabel">
+                        Mission type:
+                    </span>
+                    <span class="missiontype">
+                        crossfire exterminate/assassination
+                    </span>
+
+                </div>
+                <div class="mission">
+                    <button class="redEdged" onclick="switchTabs('starMap')"
+                        title="(last node owned by the lich on the whole starmap)"> Last stand</button>
+                    <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">0</span>
+                    <p class="missiondescription">
+                        Once the lich has been cornered, you can attempt to kill it for good. Even if you fail to kill
+                        it
+                        permanently,
+                        it will leave the starmap for a short time, before coming back. And you can steal its weapon.
+                        Should you be defeated however, the lich will regain a significant amount of territory from its
+                        unlikely
+                        victory.
+                    </p>
+
+                    <div class="mission">
+                        <button class="redEdged" onclick="breakWeaponLock()">Break weapon protections</button>
+                        <span class="intelcostLabel">Intel cost (lowered with each lich encounter): </span><span
+                            class="intelcost" id="weaponLockStrength">1500</span>
+                        <p class="missiondescription">
+                            A lich's kuva weapon is biometrically locked to itself. To steal it, you need to either kill
+                            the lich hard
+                            enough (through a Last Stand mission)
+                            or break the encryption. This costs a lot of intel, but the cost is lowered for each
+                            encounter you have with
+                            the
+                            Lich. Once you break the encryption,
+                            you can steal the lich's weapon on the next encounter. The lich will then find a new, better
+                            weapon.<br>
+                        </p>
+                        <span class="missiontypeLabel">
+                            Mission type:
+                        </span>
+                        <span class="missiontype">
+                            not a mission, but a modifier/flag
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+</body>
+
+</html>

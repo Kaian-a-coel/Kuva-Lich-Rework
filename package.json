@@ -1,0 +1,15 @@
+{
+  "name": "kaian_lich",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Lich_rework.js",
+  "scripts": {
+    "sass": "sass --watch ./lich_rework.scss:lich_rework.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sass": "^1.23.7"
+  }
+}
