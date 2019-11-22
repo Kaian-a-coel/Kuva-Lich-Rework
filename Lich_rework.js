@@ -259,7 +259,6 @@ function lichGetAsset() {
     if (!Assets[assetGotten].owned) {
         Assets[assetGotten].owned = true;
 
-        console.log(assetGotten)
         if(startsWithVowel(assetGotten)) {
             alert(Lich.name + " got their hands on an " + assetGotten + "!");
         } else {
@@ -943,6 +942,7 @@ function lichEncounter() {
 function updateParazon(node, number) {
     if (node.selectedIndex != 0) //0 is no mod
     {
+        node.classList.add('selected')
         if (number != 0 && document.getElementById("firstParazonMod").selectedIndex == node.selectedIndex) {
             document.getElementById("firstParazonMod").selectedIndex = 0;
             Parazon.requiemEquipped[0] = "(none)";
@@ -955,6 +955,8 @@ function updateParazon(node, number) {
             document.getElementById("thirdParazonMod").selectedIndex = 0;
             Parazon.requiemEquipped[2] = "(none)";
         }
+    }  else {
+        node.classList.remove('selected')
     }
     Parazon.requiemEquipped[number] = node.options[node.selectedIndex].value;
 
@@ -1057,13 +1059,13 @@ function murmurs() //this is where the computer play Mastermind (for regular enc
 
 //because rank, XP, weapon, element are gonna change often, so this here is convenient
 function updateLichInfo() {
-    document.getElementById("lichRank").value = Lich.rank;
-    document.getElementById("lichXP").value = Lich.experience;
-    document.getElementById("lichAnger").value = Lich.anger;
-    document.getElementById("lichName").value = Lich.name;
-    document.getElementById("lichGender").value = Lich.gender;
-    document.getElementById("lichWeapon").value = Lich.weapon;
-    document.getElementById("lichElement").value = Lich.element + " " + Lich.bonusDamage + "%";
+    document.getElementById("lichName").innerText = Lich.name;
+    document.getElementById("lichGender").innerText = Lich.gender;
+    document.getElementById("lichRank").innerText = Lich.rank;
+    document.getElementById("lichXP").innerText = Lich.experience;
+    document.getElementById("lichAnger").innerText = Lich.anger;
+    document.getElementById("lichWeapon").innerText = Lich.weapon;
+    document.getElementById("lichElement").innerText = Lich.element + " " + Lich.bonusDamage + "%";
     document.getElementById("weaponLockStrength").innerText = Lich.lockStrength;
 
     if (weaponBiometricsBroken) {
@@ -1162,18 +1164,38 @@ function populateAssetsDisplay() {
     assetsList.forEach(assetsTier => {
         var newAssetTierHeader = document.createElement("div")
         newAssetTierHeader.id = "assetTier" + Assets[assetsTier[0]].tier;
-        newAssetTierHeader.innerHTML = "Assets tier " + Assets[assetsTier[0]].tier + ": <br><br>";
+        newAssetTierHeader.classList.add("assetTier");
+        newAssetTierHeader.innerHTML = "<h3>Assets tier " + Assets[assetsTier[0]].tier + ": </h3>";
         newAssetTierHeader.hidden = true;
-        assetsDisplay.appendChild(newAssetTierHeader);
 
         assetsTier.forEach(asset => {
             var newAssetEntry = document.createElement("div");
             newAssetEntry.id = asset;
+            newAssetEntry.classList.add("asset");
             newAssetEntry.hidden = true;
-            newAssetEntry.innerHTML = '<input type="button" value="Destroy" onclick="destroyAsset(' + "'" + asset + "'" + ')">'
-                + asset + ": <br>Type: " + Assets[asset].type + "<br>Effects: " + Assets[asset].effects + "<br>Rewards: " + Assets[asset].rewards + "<br>______________";
+            let htmlButton = `<button class="redEdged" value="Destroy" onclick="destroyAsset('${asset}')">Destroy</button>`;
+            let htmlHeadline = `<h4>${asset}</h4>`
+            let htmlTable = `
+                <table>
+                    <tr>
+                        <td>Type:</td>
+                        <td>${Assets[asset].type}</td>
+                    </tr>
+                    <tr>
+                        <td>Effect:</td>
+                        <td>${Assets[asset].effects}</td>
+                    </tr>
+                    <tr>
+                        <td>Rewards:</td>
+                        <td>${Assets[asset].rewards}</td>
+                    </tr>
+                </table>
+            `
+            newAssetEntry.innerHTML = htmlHeadline + htmlButton + htmlTable
             newAssetTierHeader.appendChild(newAssetEntry);
         });
+
+        assetsDisplay.appendChild(newAssetTierHeader);
     });
 }
 
@@ -1225,4 +1247,17 @@ function getRndInteger(min, max) {
 // Vesp Stuff
 function startsWithVowel(st) {
     return (st.toLowerCase().startsWith('a') || st.toLowerCase().startsWith('e') || st.toLowerCase().startsWith('i') || st.toLowerCase().startsWith('o') || st.toLowerCase().startsWith('u'))  
+}
+
+
+const navItems = document.getElementsByClassName('nav-tabs')
+for (let i = 0; i < navItems.length; i++) {
+    const element = navItems[i];
+    element.addEventListener('click', function(){
+        for (let i = 0; i < navItems.length; i++) {
+            const element = navItems[i];
+            element.classList.remove('active')
+        }
+        this.classList.add('active')
+    })
 }

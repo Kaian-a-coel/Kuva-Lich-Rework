@@ -1,0 +1,67 @@
+select{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: 0 !important;
+  background: #2c3e50;
+  background-image: none;
+}
+
+.pazon-mods-container {
+  display: flex;
+  justify-content: space-between;
+
+  select {
+    flex-basis: 30%;
+    font-family: "Michroma", "Open Sans", Helvetica, sans-serif;
+    letter-spacing: 3px;
+    box-sizing: border-box;
+
+    &::-ms-expand {
+      display: none;
+    }
+    position: relative;
+    display: flex;
+    width: 20em;
+    height: 3em;
+    line-height: 3;
+    background: #000;
+    overflow: hidden;
+    border-radius: .25em;
+    padding: 0 .5em;
+    cursor: pointer;
+    color: #cccccc;
+    text-align: center;
+  
+    &:after {
+      content: '\25BC';
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0 1em;
+      background: #000;
+      cursor: pointer;
+      pointer-events: none;
+      -webkit-transition: .25s all ease;
+      -o-transition: .25s all ease;
+      transition: .25s all ease;
+  
+    }
+
+    &.selected {
+      color: #f39c12;
+    }
+  }
+
+  option {
+    padding: 0.4rem;
+    display: block;
+    color: #f39c12;
+    &:first-of-type {
+      color: #cccccc;
+    }
+  }
+}
