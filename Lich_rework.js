@@ -48,6 +48,7 @@ const elementsList = ["Impact", "Heat", "Cold", "Electricity", "Toxin", "Magneti
 const firstNames = ["Abahela", "Abuhbik", "Adihk", "Aditt", "Aff", "Afteve", "Agigrbav", "Agizr", "Agopp", "Ahbah", "Ahili", "Ahkt", "Aiksitt", "Amukir", "Andigi", "Anurel", "Aoditekk", "App", "Arahidd", "Arolov", "Asedd", "Astemm", "Auhbiktu", "Aurr", "Autonut", "Avirb", "Avukk", "Axugg", "Azorgg", "Barr", "Bedd", "Bess", "Bhigg", "Bhkinmogg", "Bidd", "Bopp", "Bukk", "Burvuhil", "Buvudd", "Cakk", "Cebb", "Chkk", "Ciksopo", "Cilba", "Cirech", "Cixx", "Cogrg", "Colh", "Colivo", "Colnd", "Colokk", "Colonoo", "Comorgo", "Conakk", "Conana", "Condig", "Condipp", "Conn", "Conpo", "Copurr", "Corduv", "Corgmor", "Corr", "Cortekk", "Cubb", "Cugal", "Cugrobev", "Cunvon", "Cuvidd", "Cuzokk", "Dahkk", "Dand", "Dore", "Drgg", "Febitt", "Femm", "Fepipp", "Fetzk", "Gigg", "Gilil", "Gogrog", "Habilop", "Hokk", "Hoktahokk", "Jebud", "Jeghh", "Jiff", "Jigugg", "Jolokk", "Jon'k", "Jubb", "Juliff", "Jurgg", "Jurghuzz", "Jusogg", "Juzz", "Kalilh", "Kedi", "Kibudekk", "Kilordi", "Kirdi", "Kirr", "Kixahin", "Koli", "Kundibb", "Lagiks", "Lekk", "Leliki", "Less", "Lidd", "Ligg", "Liliff", "Lithelonn", "Lizr", "Logg", "Loss", "Ludd", "Lukk", "Lurr", "Madd", "Magudd", "Migg", "Migrghb", "Mirdiln", "Mirili", "Miskigg", "Mizrbiku", "Molik", "Munuki", "Murdagg", "Naburirb", "Nakk", "Nandi", "Nili", "Nogo", "Nohba", "Nohid", "Obb", "Obuk", "Odordukk", "Ogemagg", "Ogg", "Ongrushk", "Onuvuk", "Orgadd", "Ory", "Ovixali", "Ovizo", "Pavodd", "Purvrp", "Putrebb", "Ranukk", "Roo", "Rorbukk", "Rorenv", "Rukk", "Rukuvr", "Sadajj", "Sardi", "Sikibu", "Sikud", "Songu", "Sonn", "Sovopp", "Sury", "Tee", "Tigg", "Tilokk", "Torr", "Tortaho", "Tosunn", "Turr", "Ukk", "Uvutt", "Vargg", "Varr", "Vegidd", "Vemm", "Vodd", "Wiksh", "Wirihi", "Xidd", "Xigba", "Xigit", "Ximukk", "Yajj", "Yigg", "Yitt", "Yolilik", "Yugg", "Yuxx", "Zegubb", "Zikekk", "Zoo", "Zopiketu", "Zuu", "Zy"];
 const lastNames = ["Abekk", "Abrnia", "Aff", "Agekan", "Agg", "Aikr", "Airg", "Aizogg", "Ajiror", "Ak'duhovo", "Akan", "Akiben", "Akipu", "Amokk", "App", "Arikk", "Arott", "Aruvt", "Ashg", "Asuduko", "Asugg", "Asuhibi", "Asul", "Asutikk", "Axulo", "Bekakk", "Bidd", "Bikk", "Bivtiss", "Crbenn", "Crbiss", "Crgdbrb", "Crirr", "Cromm", "Crosygg", "Cruhod", "Crur", "Dediga", "Delo", "Diss", "Divi", "Dora'fibb", "Dorzoff", "Duu", "Edudz", "Egg", "Ek'agg", "Ek'k", "Ekarboif", "Enukk", "Faba", "Fahobur", "Fanenirr", "Fangg", "Fann", "Fegaboabb", "Fegi", "Feglibo", "Fenurr", "Fetomm", "Fikk", "Firr", "Fishobe", "Fiss", "Fitt", "Fudu", "Furgang", "Fuzbam", "Gaa", "Gabb", "Gagelp", "Gahkk", "Gahl", "Gakk", "Ganabrzz", "Ganikk", "Gapp", "Grgik", "Grpesu", "Ha'he", "Hak", "Haka", "Harb", "Haree", "Hatanar", "Hekk", "Heloo", "Herah", "Hevo", "Hiji", "Hikrzz", "Hitt", "Imm", "Imuho", "Jann", "Jed", "Jelipta", "Jobevta", "Jokh", "Jorr", "Kaa", "Kakann", "Karkakan", "Khdifngrg", "Kodz'fu", "Koff", "Kombavv", "Kranedij", "Ledd", "Likk", "Lilo", "Lipp", "Loree", "Lorr", "Lorz'hl", "Lorzz", "Lushokh", "Mabed'di", "Magodd", "Mane", "Mekk", "Melikoff", "Menn", "Meviss", "Migg", "Miji", "Mobil", "Mobonik", "Morgiss", "Mosygg", "Movupt", "Norr", "Nott", "Obb", "Ogekev", "Ogg", "Ogudilv", "Omoib", "Rapp", "Rekk", "Roo", "Rul'f", "Sangebo", "Sann", "Sipp", "Siss", "Soig", "Sokk", "Sorr", "Sostukk", "Sozonge", "Stakk", "Stanika", "Stath", "Sthorr", "Stij", "Straho", "Strn", "Stsuhli", "Tabb", "Tagr", "Tamobeko", "Tapp", "Tebikk", "Tett", "Tiduhdu", "Tijorvokk", "Tili", "Tuloo", "Turidi", "Tygg", "Udabel", "Udd", "Udiaba", "Udigg", "Udrbra", "Ududiss", "Udzbo", "Ul'fngg", "Uligg", "Vach", "Vakk", "Varorngg", "Vataba", "Vavenn", "Vobakk", "Vorr", "Votanul", "Yosykk", "Zachg", "Zevil"];
 const genders = ["male", "female"];
+const pronouns = {male:["he", "him", "his"], female:["she", "her", "her"]};
 
 //SOLAR SYSTEM
 //Solar system. Contains all the nodes, their neighbours, and whether they are free or occupied.
@@ -107,30 +108,31 @@ const SolarSystemCatalogue = [["Appolodorus", "Boethius", "Caloris", "Elion", "L
 //possible types: equipment (destroyed by sabotage), personnel (exterminate/sabotage), specialist (capture/assassination).
 //Empyrean/Railjack stuff can be slotted into this system relatively easily. A galleon could be a tier 5 equipment for example.
 var Assets = {
-    Crate_of_grattlers: { tier: 1, owned: false, type: "equipment", effects: "Replace heavy gunner thralls with Tusk heavy gunners.", rewards: "Grattler blueprint, Gravimag." },
+    Crate_of_grattlers: { tier: 1, owned: false, type: "equipment", effects: "Replace heavy gunner thralls and all heavy gunners in Lich missions with Tusk heavy gunners.", rewards: "Grattler blueprint, Gravimag." },
     Indiscriminate_security_system: { tier: 1, owned: false, type: "equipment", effects: "Lich missions are susceptible to have environmental hazards. Type depends on Lich element (fire, cold, magnetic, radiation...)", rewards: "Something elemental related. Mods probably." },
     Trap_master: { tier: 1, owned: false, type: "specialist", effects: "Shock traps, fragmentation mines (from kuva fortress), turret rollers (from rathuum), and magnetic door fields, appear in lich missions.", rewards: "A chat ban." },
     Ghoul_pack: { tier: 1, owned: false, type: "personnel", effects: "Ghouls in lich missions.", rewards: "ghoul drops." },
+    Warframe_helmet_trophy: {tier:1, owned:false, type:"trophy", effects:"The Lich has your helmet on their shoulder and calls you a loser. Also some ability theft.", rewards:"Lich loses the stolen ability, recovering your honor."}, //This is not obtainable randomly, but by the lich defeating you.
 
     Kuva_guardians_bodyguards: { tier: 2, owned: false, type: "personnel", effects: "Lich spawns accompanied by two Kuva Guardians. Guardians occasionally appear in lich missions.", rewards: "Kesheg blueprint, kuva and kuva associated paraphernalia." },
     Beastmaster: { tier: 2, owned: false, type: "specialist", effects: "Hyekka and Drakk masters are a lot more common, and their beasts are more dangerous.", rewards: "Companion mods, those hyekka/Drakk imprints that the cetus guy sells..." },
 
     Cybersecurity_expert: { tier: 3, owned: false, type: "specialist", effects: "Makes hacking in lich missions more difficult (e.g. more pips). Shortens hacking time. Disable the use of ciphers.", rewards: "Parazon mods, spy rewards, a bunch of ciphers." },
     Manics_cloning_tubes: { tier: 3, owned: false, type: "personnel", effects: "Manics spawn frequently in Lich missions.", rewards: "Ash alt helmets, dagger blueprints and mods..." },
-    Lone_smuggler: { tier: 3, owned: false, type: "specialist", effects: "More mission rewards stolen.", rewards: "Archwing mods and stuff." },
+    Lone_smuggler: { tier: 3, owned: false, type: "specialist", effects: "More mission rewards stolen. Destroying it is an Archwing mission.", rewards: "Archwing mods and stuff." },
     Disruptor_pulse_backpacks: { tier: 3, owned: false, type: "equipment", effects: "Some elite thralls may carry disruptor packs, emitting red nullifier pulses.", rewards: "I don't know" },
 
     Secret_bunkers_network: { tier: 4, owned: false, type: "equipment", effects: "Intel costs increased by 50% due to the difficulty to track thrall cells.", rewards: "Not having to deal with the increased costs?" },
     Fast_response_strike_squad: { tier: 4, owned: false, type: "personnel", effects: "An elite eximus thrall death squad may teleport onto the offending tenno with little warning during lich missions.", rewards: "spectre blueprints" },
     Demented_doctor: { tier: 4, owned: false, type: "specialist", effects: "Low ranking thralls may turn into heavy infested units when the battle turn against the lich's forces. Possibility of mission-wide hazardous atmosphere.", rewards: "Infested/defection related stuff." },
 
-    Nightwatch_support: { tier: 5, owned: false, type: "personnel", effects: "Regular grineer thralls replaced by Nightwatch elites.", rewards: "Whatever nightwatch alerts rewarded." },
+    Nightwatch_support: { tier: 5, owned: false, type: "personnel", effects: "Regular grineer thralls and some Lich mission units replaced by Nightwatch elites.", rewards: "Whatever nightwatch alerts rewarded." },
     Rathuum_executioner: { tier: 5, owned: false, type: "specialist", effects: "An elite rathuum executioner may appear in lich missions (always the same).", rewards: "Endo, rathuum/Kela mods." },
 }
 
 //needed for random selection, since that can't be done as easily on associative arrays.
 const assetsList = [
-    ["Crate_of_grattlers", "Indiscriminate_security_system", "Trap_master", "Ghoul_pack"], //tier 1
+    ["Crate_of_grattlers", "Indiscriminate_security_system", "Trap_master", "Ghoul_pack", "Warframe_helmet_trophy"], //tier 1
     ["Kuva_guardians_bodyguards", "Beastmaster"], //tier 2
     ["Cybersecurity_expert", "Manics_cloning_tubes", "Lone_smuggler", "Disruptor_pulse_backpacks"], //tier 3
     ["Secret_bunkers_network", "Fast_response_strike_squad", "Demented_doctor"], //tier 4
@@ -228,10 +230,10 @@ function lichLanding() {
     }
 
     if (Lich.experience != 0 || Lich.rank != 1 || intel != 0) {
-        alert(Lich.name + " has come back! Resurrected on " + landing + ", they have re-established a base of operation on " + SolarSystem[landing].planet + ".");
+        alert(Lich.name + " has come back! Resurrected on " + landing + ", " + pronouns[Lich.gender][0] + " has re-established a base of operation on " + SolarSystem[landing].planet + ".");
     }
     else {
-        alert(Lich.name + " has appeared! Gifted the cursed immortality of Kuva by the Grineer Queens, they landed on " + landing + " and sent their thralls to establish their influence over " + SolarSystem[landing].planet + ".")
+        alert(Lich.name + " has appeared! Gifted the cursed immortality of Kuva by the Grineer Queens, " + pronouns[Lich.gender][0] + " landed on " + landing + " and sent " + pronouns[Lich.gender][2] + " thralls to establish " + pronouns[Lich.gender][2] + " influence over " + SolarSystem[landing].planet + ".")
     }
 
 }
@@ -254,15 +256,15 @@ function lichGetAsset() {
         var assetGotten = assetsList[assetTier][getRndInteger(0, assetsList[assetTier].length - 1)]; //What asset is drawn. This is a string.
         noInfiniteLoops++;
     }
-    while (Assets[assetGotten].owned && noInfiniteLoops < 20);
+    while (Assets[assetGotten].owned && Assets[assetGotten].type == "trophy" && noInfiniteLoops < 20);
 
     if (!Assets[assetGotten].owned) {
         Assets[assetGotten].owned = true;
 
         if(startsWithVowel(assetGotten)) {
-            alert(Lich.name + " got their hands on an " + assetGotten + "!");
+            alert(Lich.name + " got " + pronouns[Lich.gender][2] + " hands on an " + assetGotten + "!");
         } else {
-            alert(Lich.name + " got their hands on a " + assetGotten + "!");
+            alert(Lich.name + " got " + pronouns[Lich.gender][2] + " hands on a " + assetGotten + "!");
         }
         
 
@@ -486,7 +488,7 @@ function expelMission(node) {
     else {
         var intelCost = 20;
         if (intel < intelCost) {
-            alert("Not enough intel to root out lich activity. Need: " + intelCost + " intel.")
+            alert("Not enough intel to root out lich activity. Need: " + intelCost + " intel.\nAcquire basic Intel through regular missions.")
         }
         else {
             intel -= intelCost; //cost subject to balance. This amount is largely neutral. (-2 on average)
@@ -810,8 +812,18 @@ function lastStand() {
     }
     else {
         //defeat
-        lastStandResults += "And were defeated... (1/10 chance)\n" + Lich.name + " rallied grineer to his banner thanks to his unlikely comeback, and regained territory on " + SolarSystem[Lich.territory_edges[0]].planet + ".\n";
+        lastStandResults += "And were defeated... (1/10 chance)\n" + Lich.name + " rallied grineer to " + pronouns[Lich.gender][2] + " banner thanks to " + pronouns[Lich.gender][2] + " unlikely comeback, and regained territory on " + SolarSystem[Lich.territory_edges[0]].planet + ".\n";
         //expand() a few times, lich gains a ton of XP.
+
+        //acquire a trophy
+        if(!Assets["Warframe_helmet_trophy"].owned)
+        {
+        Assets["Warframe_helmet_trophy"].owned = true;
+        document.getElementById("assetTier" + Assets["Warframe_helmet_trophy"].tier).hidden = false;
+        document.getElementById("Warframe_helmet_trophy").hidden = false;
+        lastStandResults += pronouns[Lich.gender][0] + " also tore the helmet from your destroyed frame, and wears it as a trophy!\n"
+        }
+
         for (let i = 0; i <= Lich.rank; i++) {
             expand();
         }
@@ -873,13 +885,13 @@ function lichPlunder() {
         blueprints: 0,
     }
 
-    if (Math.random() > 0.5) {
+    if (Math.random() < 0.5) {
         plunder.mods = getRndInteger(1, 3);
     }
-    if (Math.random() > 0.75) {
+    if (Math.random() < 0.25) {
         plunder.relics = 1;
     }
-    if (Math.random() > 0.95) {
+    if (Math.random() < 0.05) {
         plunder.blueprints = 1;
     }
 
@@ -906,7 +918,7 @@ function lichEncounter() {
         Lich.lockStrength = Math.max(Math.floor(0.9 * Lich.lockStrength), 150);
 
         //win/lose, random chance
-        if (Math.random() >= 0.1) //90% chance to win
+        if (Math.random() < 0.9) //90% chance to win
         {
             //win
             encounterResults += "...and won!\n";
@@ -929,6 +941,15 @@ function lichEncounter() {
             //lose
             encounterResults += "...and lost! (1/10 chance in this demo)\n";
             lichLevelUp(getRndInteger(200, 300)); // a LOT of XP to the Lich if you lose.
+
+            //acquire a trophy sometimes
+            if(!Assets["Warframe_helmet_trophy"].owned && Math.random()<0.5)
+            {
+            Assets["Warframe_helmet_trophy"].owned = true;
+            document.getElementById("assetTier" + Assets["Warframe_helmet_trophy"].tier).hidden = false;
+            document.getElementById("Warframe_helmet_trophy").hidden = false;
+            encounterResults += pronouns[Lich.gender][0] + " also tore the helmet from your destroyed frame, and wears it as a trophy!\n"
+            }
         }
         Lich.anger = 0;
         trackedDown = false;
