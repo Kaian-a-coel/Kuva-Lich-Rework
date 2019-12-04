@@ -256,10 +256,11 @@ function lichGetAsset() {
         var assetGotten = assetsList[assetTier][getRndInteger(0, assetsList[assetTier].length - 1)]; //What asset is drawn. This is a string.
         noInfiniteLoops++;
     }
-    while (Assets[assetGotten].owned && Assets[assetGotten].type == "trophy" && noInfiniteLoops < 20);
+    while ((Assets[assetGotten].owned || Assets[assetGotten].type == "trophy") && noInfiniteLoops < 20);
 
-    if (!Assets[assetGotten].owned) {
+    if (!Assets[assetGotten].owned && Lich.assets.length < Lich.rank+2) { //limit to number of assets per lich to 3-7.
         Assets[assetGotten].owned = true;
+        Lich.assets.push(assetGotten);
 
         if(startsWithVowel(assetGotten)) {
             alert(Lich.name + " got " + pronouns[Lich.gender][2] + " hands on an " + assetGotten + "!");
@@ -362,7 +363,7 @@ function liberate(node) {
 }
 
 function expand() {
-    if (Lich.territory_edges.length) {
+    if (Lich.territory_edges.length && (Lich.territory_locked.length + Lich.territory_edges.length < Lich.rank*10)) { //maximum territory size, subject to balance. Especially in a bigger solar system.
         var expansionStart = SolarSystem[Lich.territory_edges[getRndInteger(0, (Lich.territory_edges.length) - 1)]]; //pick a random start from lich territory edges
         var expansionTarget;
         var loopCounter = 0; //prevents infinite loops
@@ -679,6 +680,13 @@ function destroyAsset(asset) //where asset is a string name
             var missionResults = commonMissionStuff();
 
             Assets[asset].owned = false;
+            
+            var assetIndex = Lich.assets.findIndex(findNodeIndex, asset);
+            if (assetIndex >= 0) //never too careful
+            {
+                Lich.assets.splice(assetIndex, 1);
+            }
+
             document.getElementById(asset).hidden = true;
 
             var alertContent = Lich.name + "'s " + asset + " successfully destroyed!\n" + missionResults.alertContent
@@ -758,6 +766,11 @@ function lastStand() {
             lastStandResults += "You finally defeated " + Lich.name + " for good! The system is now free from this particular threat.\n"
             document.getElementById("lichCreate").hidden = false;
             document.getElementById("lichInfo").hidden = true;
+            Lich.assets.forEach(asset => {
+                Assets[asset].owned = false;
+                document.getElementById(asset).hidden = true;
+            });
+            Lich.assets = [];
             intel = 0;
             updateIntelDisplay();
             Lich.alive = false;
@@ -819,6 +832,7 @@ function lastStand() {
         if(!Assets["Warframe_helmet_trophy"].owned)
         {
         Assets["Warframe_helmet_trophy"].owned = true;
+        Lich.assets.push("Warframe_helmet_trophy");
         document.getElementById("assetTier" + Assets["Warframe_helmet_trophy"].tier).hidden = false;
         document.getElementById("Warframe_helmet_trophy").hidden = false;
         lastStandResults += pronouns[Lich.gender][0] + " also tore the helmet from your destroyed frame, and wears it as a trophy!\n"
@@ -946,6 +960,7 @@ function lichEncounter() {
             if(!Assets["Warframe_helmet_trophy"].owned && Math.random()<0.5)
             {
             Assets["Warframe_helmet_trophy"].owned = true;
+            Lich.assets.push("Warframe_helmet_trophy");
             document.getElementById("assetTier" + Assets["Warframe_helmet_trophy"].tier).hidden = false;
             document.getElementById("Warframe_helmet_trophy").hidden = false;
             encounterResults += pronouns[Lich.gender][0] + " also tore the helmet from your destroyed frame, and wears it as a trophy!\n"
