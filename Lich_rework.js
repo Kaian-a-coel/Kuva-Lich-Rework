@@ -180,7 +180,7 @@ function generateWeapon(previousWeapon, isReroll) {
     }
     while (newWeapon == previousWeapon); //Bad luck protection: can't get same weapon twice in a row.
 
-    newBonusDamage = getRndInteger(1, 10) + getRndInteger(1, 10) + getRndInteger(1, 10) + 5 + 5 * Lich.rank; //Made the bonus damage depend on lich rank.
+    newBonusDamage = Math.max(25, getRndInteger(1, 10) + getRndInteger(1, 10) + getRndInteger(1, 10) + 5 + 5 * Lich.rank); //Made the bonus damage depend on lich rank.
     //This is 3d10+5+(5*rank), so 3d10+10 to 3d10+30. Averages per rank are 28, 32, 36.5, 41.5, 46.5 before correction. So they'll be higher.
 
     if (isReroll && newBonusDamage < Lich.bonusDamage) //Make the bonus damage at least a little bit better if it's not a new lich. This means a very old lich will consistently put out +60% weapons.
