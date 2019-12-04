@@ -178,10 +178,10 @@ function generateWeapon(previousWeapon, isReroll) {
     }
     while (newWeapon == previousWeapon); //Bad luck protection: can't get same weapon twice in a row.
 
-    newBonusDamage = getRndInteger(20, 40) + 5 * Lich.rank; //Made the bonus damage depend on lich rank. 
-    //This here is linear as fuck, which isn't representative of the live system, which is biased towards lower values.
+    newBonusDamage = getRndInteger(1, 10) + getRndInteger(1, 10) + getRndInteger(1, 10) + 5 + 5 * Lich.rank; //Made the bonus damage depend on lich rank.
+    //This is 3d10+5+(5*rank), so 3d10+10 to 3d10+30. Averages per rank are 28, 32, 36.5, 41.5, 46.5 before correction. So they'll be higher.
 
-    if (isReroll && newBonusDamage < Lich.bonusDamage) //Make the bonus damage at least a little bit better if it's not a new lich
+    if (isReroll && newBonusDamage < Lich.bonusDamage) //Make the bonus damage at least a little bit better if it's not a new lich. This means a very old lich will consistently put out +60% weapons.
     {
         newBonusDamage = Math.min(Lich.bonusDamage + 1, 60);
     };
@@ -427,7 +427,7 @@ function checkLocked(node) {
 // ++
 
 function dailyTick() {
-    if (!Lich.territory_edges.length && !Lich.territory_locked.length && Lich.alive && Math.random() < 0.4)//If Lich alive and no territory, then 40% chance to land.
+    if (!Lich.territory_edges.length && !Lich.territory_locked.length && Lich.alive && Math.random() < 0.67)//If Lich alive and no territory, then 67% chance to land.
     {
         lichLanding();
     }
@@ -436,7 +436,7 @@ function dailyTick() {
         lichLevelUp(getRndInteger(6, 30) + Lich.territory_locked.length + Lich.territory_edges.length); //small bit of XP every day. Like very little. Would be more with more planets.
         expand();
 
-        if (Math.random() < 0.25) //1/4 chance to get an asset per day. Subject to balance.
+        if (Math.random() < 0.5) //1/2 chance to get an asset per day. Subject to balance.
         {
             lichGetAsset();
         }
@@ -524,7 +524,7 @@ function purgePlanet(purgedPlanet) {
     if (!isLastPlanet && nodesOnPlanet) {
         var intelCost = Math.floor(20 * (nodesOnPlanet ** 1.5)); //cost scales up with number of occupied nodes
         if (intel < intelCost) {
-            alert("Not enough intel to find a critical HQ on " + purgedPlanet);
+            alert("Not enough intel to find a critical HQ on " + purgedPlanet + ". You need " + intelCost + " to purge that many nodes at once.");
         }
         else {
             intel -= intelCost;
@@ -789,11 +789,19 @@ function lastStand() {
 
         lastStandResults += "Recovered the entirety of " + Lich.name + "'s treasury:\n"
             + Lich.treasury.credits + " credits\n"
-            + Lich.treasury.common_resources + " common resources\n";
-        + Lich.treasury.rare_resources + " rare resources\n";
-        + Lich.treasury.mods + " mods\n";
-        + Lich.treasury.relics + " relics\n";
+            + Lich.treasury.common_resources + " common resources\n"
+        + Lich.treasury.rare_resources + " rare resources\n"
+        + Lich.treasury.mods + " mods\n"
+        + Lich.treasury.relics + " relics\n"
         + Lich.treasury.blueprints + " blueprint\n";
+
+        //removing the recovered loot from the lich's treasury
+        Lich.treasury.credits = 0;
+        Lich.treasury.common_resources = 0;
+        Lich.treasury.rare_resources = 0;
+        Lich.treasury.mods = 0;
+        Lich.treasury.relics = 0;
+        Lich.treasury.blueprints = 0;
 
         document.getElementById("treasuryDisplay").innerHTML = "(nothing)";
 
@@ -1065,7 +1073,7 @@ function updateLichInfo() {
     document.getElementById("lichXP").innerText = Lich.experience;
     document.getElementById("lichAnger").innerText = Lich.anger;
     document.getElementById("lichWeapon").innerText = Lich.weapon;
-    document.getElementById("lichElement").innerText = Lich.element + " " + Lich.bonusDamage + "%";
+    document.getElementById("lichElement").innerText = Lich.element + " +" + Lich.bonusDamage + "%";
     document.getElementById("weaponLockStrength").innerText = Lich.lockStrength;
 
     if (weaponBiometricsBroken) {
@@ -1215,11 +1223,13 @@ function switchTabs(tab) {
     var requiemTab = document.getElementById("requiem");
     var lichAssetsTab = document.getElementById("lichAssets");
     var intelMissionsTab = document.getElementById("intelMissions");
+    var helpTab = document.getElementById("help");
 
     starmapTab.hidden = true;
     requiemTab.hidden = true;
     lichAssetsTab.hidden = true;
     intelMissionsTab.hidden = true;
+    helpTab.hidden = true;
 
     document.getElementById(tab).hidden = false;
 }
