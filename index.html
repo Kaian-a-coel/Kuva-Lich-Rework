@@ -23,6 +23,7 @@
         <input class="nav-tabs" type="button" value="Requiem" id="requiemTab" onclick="switchTabs('requiem')">
         <input class="nav-tabs" type="button" value="Lich Assets" id="lichAssetsTab" onclick="switchTabs('lichAssets')">
         <input class="nav-tabs" type="button" value="Intel missions" id="intelMissionsTab" onclick="switchTabs('intelMissions')">
+        <input class="nav-tabs" type="button" value="Help / FAQ" id="helpTab" onclick="switchTabs('help')">
         <span id="intelDisplay"> Intel: 0</span>
         <span id="dayCounter"> Day: 0</span>
         <input type="button" value="Next Day" onclick="dailyTick()">
@@ -535,7 +536,7 @@
                     <button class="redEdged">Normal mission</button>
                     <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">0</span>
                     <p class="missiondescription">
-                        Lich thralls and the lich itself can spawn in regular missions.
+                        Lich thralls and the lich itself can spawn in regular missions. You can acquire Intel there at no initial cost.
                     </p>
                     <span class="missiontypeLabel">
                         Mission type:
@@ -550,8 +551,8 @@
                     <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">20</span>
                     <p class="missiondescription">
                         A swift attack on a local thrall cell, to remove the lich's influence from a node. Equivalent to
-                        the lich
-                        missions in the live game.
+                        the lich missions in the live game. Cost a little bit of Intel, but you still acquire Intel there. 
+                        Overall these missions are roughly Intel-neutral.
                     </p>
                     <span class="missiontypeLabel">
                         Mission type:
@@ -562,15 +563,13 @@
 
                 </div>
                 <div class="mission">
-                    <button class="redEdged" onclick="switchTabs('starMap')" disabled title=" (on the starmap, pick a planet that isn't the only one with lich influence) (NOTE: Not currently
-            implemented)">Purge</button>
+                    <button class="redEdged" onclick="switchTabs('starMap')" disabled title=" (on the starmap, pick a planet that isn't the only one with lich influence)">Purge</button>
                     <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">high (scales with # of
                         occupied nodes on planet)</span>
                     <p class="missiondescription">
                         A brutal, large scale offensive, targeted at the lich's HQ on a planet.
                         Such a mission will be extremely difficult, but will remove a lich's influence from the whole
-                        planet. Cannot
-                        target a lich's only remaining planet.
+                        planet. Cannot target a lich's only remaining planet.
                     </p>
                     <span class="missiontypeLabel">
                         Mission type:
@@ -584,9 +583,9 @@
                     <button class="redEdged" onclick="reconMission()">Recon</button>
                     <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">35</span>
                     <p class="missiondescription">
-                        A discrete incursion aimed at acquiring a large amount of intel. If you need a lot of intel
-                        quickly, run
-                        this.
+                        A discrete incursion aimed at acquiring a large amount of intel (150-250 at the present). 
+                        If you need a lot of intel quickly, run this. 
+                        You will need a little bit of Intel to locate the cache to raid, but a successful recon mission is greatly Intel-positive.
                     </p>
                     <span class="missiontypeLabel">
                         Mission type:
@@ -599,10 +598,8 @@
                     <button class="redEdged" onclick="recoverLoot()">Plunder</button>
                     <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">NA</span>
                     <p class="missiondescription">
-                        A raid to recover loot from the Lich's treasury. Ideally, it should be possible to spend
-                        additional Intel to
-                        recover specific loot, but that is not
-                        implemented in this application.
+                        A raid to recover loot from the Lich's treasury. Ideally, I would want it to be possible to spend
+                        additional Intel to recover specific loot, but that is not implemented in this application.
                     </p>
                     <span class="missiontypeLabel">
                         Mission type:
@@ -619,8 +616,7 @@
                         Basic version: next mission is guaranteed to have a lich spawn. <br>
                         Mission type: not a mission, but a modifier/flag.<br>
                         Advanced version: spawns a crossfire mission where the lich is busy. New voice lines for the
-                        leech being
-                        ambushed. The latter is what is being simulated here.
+                        lich being ambushed. The latter is what is being simulated here.
                     </p>
                     <span class="missiontypeLabel">
                         Mission type:
@@ -635,13 +631,11 @@
                         title="(last node owned by the lich on the whole starmap)"> Last stand</button>
                     <span class="intelcostLabel">Intel cost: </span> <span class="intelcost">0</span>
                     <p class="missiondescription">
-                        Once the lich has been cornered, you can attempt to kill it for good. Even if you fail to kill
-                        it
-                        permanently,
+                        Once the lich has been cornered, you can attempt to kill it for good. 
+                        Even if you fail to kill it permanently,
                         it will leave the starmap for a short time, before coming back. And you can steal its weapon.
                         Should you be defeated however, the lich will regain a significant amount of territory from its
-                        unlikely
-                        victory.
+                        unlikely victory.
                     </p>
 
                 </div>
@@ -650,15 +644,12 @@
                     <span class="intelcostLabel">Intel cost (lowered with each lich encounter): </span><span
                         class="intelcost" id="weaponLockStrength">1500</span>
                     <p class="missiondescription">
-                        A lich's kuva weapon is biometrically locked to itself. To steal it, you need to either kill
-                        the lich hard
-                        enough (through a Last Stand mission)
-                        or break the encryption. This costs a lot of intel, but the cost is lowered for each
-                        encounter you have with
-                        the
-                        Lich. Once you break the encryption,
-                        you can steal the lich's weapon on the next encounter. The lich will then find a new, better
-                        weapon.<br>
+                        A lich's kuva weapon is biometrically locked to its rightful owner. To steal it, you need to either kill
+                        the lich hard enough (through a Last Stand mission) or break the encryption. 
+                        This costs a lot of intel, but the cost is lowered for each
+                        encounter you have with the Lich. Once you break the encryption,
+                        you can steal the lich's weapon on the next encounter. 
+                        The lich will then find a new, better weapon.<br>
                     </p>
                     <span class="missiontypeLabel">
                         Mission type:
@@ -666,6 +657,84 @@
                     <span class="missiontype">
                         not a mission, but a modifier/flag
                     </span>
+                </div>
+            </div>
+            <div id="help" hidden>
+                <h1>
+                    HELP / FAQ
+                </h1>
+                <div class="mission">
+                    <h3>
+                        What is this all about?
+                    </h3>
+                    With update 26, DE released the Kuva Liches into Warframe. This system has disappointed a number of people, me included.
+                    It failed to live up to the hype that Tennocon built up, and to create true Nemesis for the Tenno.
+                    I have created this application/minigame to demonstrate my ideas on how to make this system better.
+                    I want kuva liches to be long term, memorable enemies. Nemesis. This requires them to be longer lived,
+                    and to have a lot more things going on. To have many systems that reward you for fighting the Lich and leaving it alive,
+                    rather than one single reward for permakilling it.
+                    This is my attempt at accomplishing that.
+                    <h4>
+                        Important note:
+                    </h4>
+                    All numbers are mostly guesswork as to what should be good. Intel gain/costs and the like are not meant to be final, 
+                    and most likely will need a lot of adjustment. I acknowledge that. Especially when it comes to lengths of time,
+                    as this application is greatly sped up compared to what the game should be (missions are just the click of a button,
+                    and so is the passage of a day).
+                </div>
+                <div class="mission">
+                    <h3>
+                        What's this "Intel" thing?
+                    </h3>
+                    Intel is a new resource tied to the Lich you currently have. You obtain it from Thralls, where it replaces murmurs,
+                    from every mission on a node with Lich influence (regular, nightmare, fissures, all of them!), and from the Recon mission.
+                    Intel is spent to interact with your Lich. You use it to expel the Lich from nodes/planets, steal its weapon, ambush it,
+                    run the aforementioned Recon mission for more Intel, etc...
+                </div>
+                <div class="mission">
+                    <h3>
+                        So how do I kill my Lich now?
+                    </h3>
+                    The basic idea of finding the correct combination of requiem mods remain the same. However, murmurs as they currently exist
+                    in the game are gone. There is now two types of Lich fights: Last Stands, and Encounters. <br>
+                    Last Stands are when you corner your Lich into one last node. At that point, the mission becomes an Assassination with
+                    the Lich as the target. This mission tests your Parazon mods much the same as it works in the live game. If you have the right
+                    combination, the Lich dies permanently. If it isn't, the Lich only mostly dies. You get the kuva weapon and recover all your stolen loot
+                    either way. If the Lich is only mostly dead, it will soon come back with a new, better weapon. <br>
+                    Encounters are any random ambushes on your Lich's part, or ambushes on your part via the Track Down intel mission.
+                    Encounters can only kill the Lich a little, regardless of the parazon configuration. If you have three requiem mods equipped,
+                    the game will tell you how many were "correct". Where "correct" means "are in the Lich's requiem", regardless of position
+                    (similar to Mastermind). You will need to use these clues to figure out the three correct mods (same purpose as murmurs right now)
+                    and then corner your Lich into a couple of Last Stands (at most four) to permanently kill or convert it.
+                    <h4>
+                        The Lich doesn't kill you on a failed requiem anymore?
+                    </h4>
+                    No, it does not.
+                    <h4>
+                        How does it rank up?
+                    </h4>
+                    Liches now have an experience bar, and gain experience over time, and when they fight you. A last stand gives
+                    more experience than an encounter, and a victorious Lich gains a lot more experience than a defeated one.
+                    This results in Liches taking a fair bit more time to get to rank 5 (again, numbers not final, it might feel too long).
+                </div>
+                <div class="mission">
+                    <h3>
+                        This is going to take forever! What about kuva weapons?
+                    </h3>
+                    While making Liches live longer was indeed a primary goal of this rework, the obtention of kuva weapons needed to change,
+                    because I don't want to spend five years farming those either. <br>
+                    There is now two ways to steal a Lich's kuva weapon: the first is to win a Last Stand. Whether the Lich is completely killed
+                    or just mostly killed, you will gain the weapon. <br>
+                    The second is to break the biometric encryption on the weapon by using a lot of Intel (see the Intel Mission tab for more details)
+                    and then win a regular Encounter.
+                    <h4>
+                        What happens when the Lich is still alive after getting its weapon stolen?
+                    </h4>
+                    It will get a new, different weapon. It cannot get the same weapon type twice in a row, the new element depends on the frame you
+                    were using when you last defeated it (though it is random in this application because it doesn't track the player's equipment),
+                    and the bonus damage is rerolled. The bonus damage is higher for higher ranked Liches, and it can never be lower than the previous weapon's
+                    roll. Altogether, this means that leaving your Lich alive as long as possible is advantageous for weapon farming, as you will gain more 
+                    powerful ones over time.
                 </div>
             </div>
         </div>
