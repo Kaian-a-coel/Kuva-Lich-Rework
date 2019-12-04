@@ -112,7 +112,6 @@ img {
 
 .main {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: start;
   max-width: 1280px;
@@ -121,7 +120,7 @@ img {
 }
 
 #lichSidebar {
-  flex-basis: 32%;
+  flex-basis: calc(25% - 1);
   max-width: 340px;
   background-color: white;
   padding: 10px 10px 2rem;
@@ -186,8 +185,17 @@ img {
   color: #e4bc53;
 }
 
+.messageBar {
+  flex-basis: calc(20% - 1);
+  max-width: 340px;
+  background-color: white;
+  padding: 10px 10px 2rem;
+  border-top: 1px solid #212121;
+  border-bottom: 3px solid #212121;
+}
+
 .content {
-  flex-basis: 64%;
+  flex-basis: calc(55% - 1);
   background-color: white;
   padding: 10px;
   border-top: 1px solid #212121;
@@ -277,7 +285,7 @@ img {
   display: block;
 }
 
-.pazon, .requiem, .murmuattempt {
+.pazon, .requiem, .murmurattempt {
   margin-bottom: 3rem;
   border-bottom: 1px solid #a0a0a0;
   padding-bottom: 2rem;
