@@ -230,10 +230,10 @@ function lichLanding() {
     }
 
     if (Lich.experience != 0 || Lich.rank != 1 || intel != 0) {
-        alert(Lich.name + " has come back! Resurrected on " + landing + ", " + pronouns[Lich.gender][0] + " has re-established a base of operation on " + SolarSystem[landing].planet + ".");
+        postMessage(Lich.name + " has come back! Resurrected on " + landing + ", " + pronouns[Lich.gender][0] + " has re-established a base of operation on " + SolarSystem[landing].planet + ".");
     }
     else {
-        alert(Lich.name + " has appeared! Gifted the cursed immortality of Kuva by the Grineer Queens, " + pronouns[Lich.gender][0] + " landed on " + landing + " and sent " + pronouns[Lich.gender][2] + " thralls to establish " + pronouns[Lich.gender][2] + " influence over " + SolarSystem[landing].planet + ".")
+        postMessage(Lich.name + " has appeared! Gifted the cursed immortality of Kuva by the Grineer Queens, " + pronouns[Lich.gender][0] + " landed on " + landing + " and sent " + pronouns[Lich.gender][2] + " thralls to establish " + pronouns[Lich.gender][2] + " influence over " + SolarSystem[landing].planet + ".")
     }
 
 }
@@ -263,9 +263,9 @@ function lichGetAsset() {
         Lich.assets.push(assetGotten);
 
         if(startsWithVowel(assetGotten)) {
-            alert(Lich.name + " got " + pronouns[Lich.gender][2] + " hands on an " + assetGotten + "!");
+            postMessage(Lich.name + " got " + pronouns[Lich.gender][2] + " hands on an " + assetGotten + "!");
         } else {
-            alert(Lich.name + " got " + pronouns[Lich.gender][2] + " hands on a " + assetGotten + "!");
+            postMessage(Lich.name + " got " + pronouns[Lich.gender][2] + " hands on a " + assetGotten + "!");
         }
         
 
@@ -471,33 +471,33 @@ function dailyTick() {
 //this is the basic mission. When you run a node normally. No fuss. Nothing special.
 function basicMission(node) {
     if (SolarSystem[node].status == "free") {
-        alert(node + " is free of lich activity.")
+        postMessage(node + " is free of lich activity.")
     }
     else {
         var missionResults = commonMissionStuff();
         updateIntelDisplay()
-        missionResults.alertContent += "\nYou gained: " + missionResults.intel + " intel";
-        alert(missionResults.alertContent);
+        missionResults.alertContent += "<br>You gained: " + missionResults.intel + " intel";
+        postMessage(missionResults.alertContent);
     }
 }
 
 //this is the mission to liberate a specific node.
 function expelMission(node) {
     if (SolarSystem[node].status == "free") {
-        alert(node + " is free of lich activity.")
+        postMessage(node + " is free of lich activity.")
     }
     else {
         var intelCost = 20;
         if (intel < intelCost) {
-            alert("Not enough intel to root out lich activity. Need: " + intelCost + " intel.\nAcquire basic Intel through regular missions.")
+            postMessage("Not enough intel to root out lich activity. Need: " + intelCost + " intel.<br>Acquire basic Intel through regular missions.")
         }
         else {
             intel -= intelCost; //cost subject to balance. This amount is largely neutral. (-2 on average)
             var missionResults = commonMissionStuff();
             updateIntelDisplay()
-            var alertContent = "Successfully expelled " + Lich.name + "'s thralls from " + node + "!\n" +
-                missionResults.alertContent + "\nYour net intel change is: " + (missionResults.intel - intelCost) + " intel";
-            alert(alertContent);
+            var alertContent = "Successfully expelled " + Lich.name + "'s thralls from " + node + "!<br>" +
+                missionResults.alertContent + "<br>Your net intel change is: " + (missionResults.intel - intelCost) + " intel";
+            postMessage(alertContent);
             liberate(node);
         }
     }
@@ -527,7 +527,7 @@ function purgePlanet(purgedPlanet) {
     if (!isLastPlanet && nodesOnPlanet) {
         var intelCost = Math.floor(20 * (nodesOnPlanet ** 1.5)); //cost scales up with number of occupied nodes
         if (intel < intelCost) {
-            alert("Not enough intel to find a critical HQ on " + purgedPlanet + ". You need " + intelCost + " to purge that many nodes at once.");
+            postMessage("Not enough intel to find a critical HQ on " + purgedPlanet + ". You need " + intelCost + " to purge that many nodes at once.");
         }
         else {
             intel -= intelCost;
@@ -539,19 +539,19 @@ function purgePlanet(purgedPlanet) {
             });
 
             updateIntelDisplay();
-            missionResults.alertContent += "\nYour net intel change is: " + (missionResults.intel + intelGain - intelCost) + " intel\n";
+            missionResults.alertContent += "<br>Your net intel change is: " + (missionResults.intel + intelGain - intelCost) + " intel<br>";
 
-            missionResults.alertContent += purgedPlanet + " has been purged of all Lich presence. Nodes freed: " + nodesOnPlanet + "\n";
+            missionResults.alertContent += purgedPlanet + " has been purged of all Lich presence. Nodes freed: " + nodesOnPlanet + "<br>";
 
-            alert(missionResults.alertContent);
+            postMessage(missionResults.alertContent);
         }
 
     }
     else if (!nodesOnPlanet) {
-        alert("No lich activity on that planet.");
+        postMessage("No lich activity on that planet.");
     }
     else if (isLastPlanet) {
-        alert("Cannot purge a lich's last remaining planet.");
+        postMessage("Cannot purge a lich's last remaining planet.");
     }
 }
 
@@ -559,7 +559,7 @@ function purgePlanet(purgedPlanet) {
 function reconMission() {
     var intelCost = 35
     if (intel < intelCost) {
-        alert("Not enough intel to find an appropriate target. Need: " + intelCost + " intel.")
+        postMessage("Not enough intel to find an appropriate target. Need: " + intelCost + " intel.")
     }
     else {
         intel -= intelCost; //about two missions worth of intel
@@ -569,9 +569,9 @@ function reconMission() {
         intel += intelGain;
 
         updateIntelDisplay()
-        missionResults.alertContent += "\nYour net intel change is: " + (missionResults.intel + intelGain - intelCost) + " intel";
+        missionResults.alertContent += "<br>Your net intel change is: " + (missionResults.intel + intelGain - intelCost) + " intel";
 
-        alert(missionResults.alertContent);
+        postMessage(missionResults.alertContent);
     }
 
 }
@@ -579,7 +579,7 @@ function reconMission() {
 function recoverLoot() {
     var intelCost = 50
     if (intel < intelCost) {
-        alert("Not enough intel to find a treasury cache. Need: " + intelCost + " intel.")
+        postMessage("Not enough intel to find a treasury cache. Need: " + intelCost + " intel.")
     }
     else {
         intel -= intelCost;
@@ -605,30 +605,30 @@ function recoverLoot() {
 
         updateTreasuryDisplay();
 
-        missionResults.alertContent += "Recovered the following from " + Lich.name + "'s treasury:\n" + recoveredLoot.credits + " credits\n" + recoveredLoot.common_resources + " common resources\n";
+        missionResults.alertContent += "Recovered the following from " + Lich.name + "'s treasury:<br>" + recoveredLoot.credits + " credits<br>" + recoveredLoot.common_resources + " common resources<br>";
         if (recoveredLoot.rare_resources) {
-            missionResults.alertContent += recoveredLoot.rare_resources + " rare resources\n";
+            missionResults.alertContent += recoveredLoot.rare_resources + " rare resources<br>";
         }
         if (recoveredLoot.mods) {
-            missionResults.alertContent += recoveredLoot.mods + " mods\n";
+            missionResults.alertContent += recoveredLoot.mods + " mods<br>";
         }
         if (recoveredLoot.relics) {
-            missionResults.alertContent += recoveredLoot.relics + " relics\n";
+            missionResults.alertContent += recoveredLoot.relics + " relics<br>";
         }
         if (recoveredLoot.blueprints) {
-            missionResults.alertContent += recoveredLoot.blueprints + " blueprint\n"
+            missionResults.alertContent += recoveredLoot.blueprints + " blueprint<br>"
         }
 
-        missionResults.alertContent += "\nYour net intel change is: " + (missionResults.intel - intelCost) + " intel";
+        missionResults.alertContent += "<br>Your net intel change is: " + (missionResults.intel - intelCost) + " intel";
 
-        alert(missionResults.alertContent);
+        postMessage(missionResults.alertContent);
     }
 }
 
 function trackDownLich() {
     var intelCost = 70;
     if (intel < intelCost) {
-        alert("Not enough intel to track down " + Lich.name + ". Need: " + intelCost + " intel.")
+        postMessage("Not enough intel to track down " + Lich.name + ". Need: " + intelCost + " intel.")
     }
     else {
         intel -= intelCost;
@@ -645,10 +645,10 @@ function trackDownLich() {
             node = Lich.territory_locked[nodeNumber - Lich.territory_edges.length];
         }
 
-        var alertContent = "Tracked down and confronted " + Lich.name + " on " + node + ", " + SolarSystem[node].planet + ".\n" + missionResults.alertContent;
-        alertContent += "\nYour net intel change is: " + (missionResults.intel - intelCost) + " intel";
+        var alertContent = "Tracked down and confronted " + Lich.name + " on " + node + ", " + SolarSystem[node].planet + ".<br>" + missionResults.alertContent;
+        alertContent += "<br>Your net intel change is: " + (missionResults.intel - intelCost) + " intel";
 
-        alert(alertContent);
+        postMessage(alertContent);
     }
 
 }
@@ -656,15 +656,15 @@ function trackDownLich() {
 function breakWeaponLock() {
     if (!weaponBiometricsBroken && intel >= Lich.lockStrength) {
         weaponBiometricsBroken = true;
-        alert("Biometric lock on " + Lich.name + "'s kuva " + Lich.weapon + " broken!\nYou will steal it on your next victorious encounter.");
+        postMessage("Biometric lock on " + Lich.name + "'s kuva " + Lich.weapon + " broken!<br>You will steal it on your next victorious encounter.");
         intel -= Lich.lockStrength;
         updateIntelDisplay()
     }
     else if (weaponBiometricsBroken) {
-        alert("Biometric lock already broken");
+        postMessage("Biometric lock already broken");
     }
     else if (intel < Lich.lockStrength) {
-        alert("Not enough intel to crack the lock.");
+        postMessage("Not enough intel to crack the lock.");
     }
 }
 
@@ -673,7 +673,7 @@ function destroyAsset(asset) //where asset is a string name
     if (Assets[asset].owned) {
         var intelCost = Assets[asset].tier * 100; //subject to balance
         if (intel < intelCost) {
-            alert("Not enough intel to locate " + Lich.name + "'s " + asset + ". Need " + intelCost + " intel to destroy a tier " + Assets[asset].tier + " asset.")
+            postMessage("Not enough intel to locate " + Lich.name + "'s " + asset + ". Need " + intelCost + " intel to destroy a tier " + Assets[asset].tier + " asset.")
         }
         else {
             intel -= intelCost;
@@ -689,10 +689,10 @@ function destroyAsset(asset) //where asset is a string name
 
             document.getElementById(asset).hidden = true;
 
-            var alertContent = Lich.name + "'s " + asset + " successfully destroyed!\n" + missionResults.alertContent
-                + "\nYour net intel change is: " + (missionResults.intel - intelCost) + " intel";
+            var alertContent = Lich.name + "'s " + asset + " successfully destroyed!<br>" + missionResults.alertContent
+                + "<br>Your net intel change is: " + (missionResults.intel - intelCost) + " intel";
 
-            alert(alertContent);
+            postMessage(alertContent);
 
         }
     }
@@ -706,35 +706,35 @@ function destroyAsset(asset) //where asset is a string name
 //this mission doesn't have a permanent button, it is generated when the program detects that the lich only has one node left
 //after a liberate(). And it's removed on successful conquer().
 function lastStand() {
-    var lastStandResults = "Fought " + Lich.name + " in a climactic battle on " + Lich.territory_edges[0] + ", " + SolarSystem[Lich.territory_edges[0]].planet + ".\n";
+    var lastStandResults = "Fought " + Lich.name + " in a climactic battle on " + Lich.territory_edges[0] + ", " + SolarSystem[Lich.territory_edges[0]].planet + ".<br>";
 
     if (Math.random() >= 0.1) {
-        lastStandResults += "And were victorious!\n"
+        lastStandResults += "And were victorious!<br>"
         var finalVictory = false;
 
         //victory
         //check combination, with order this time.
         if (Parazon.requiemEquipped[0] == Lich.requiem[0]) {
             //good first requiem
-            lastStandResults += Parazon.requiemEquipped[0] + " was the correct first requiem!\n"
+            lastStandResults += Parazon.requiemEquipped[0] + " was the correct first requiem!<br>"
 
             if (Parazon.requiemEquipped[1] == Lich.requiem[1]) {
                 //good second requiem
-                lastStandResults += "and " + Parazon.requiemEquipped[1] + " was the correct second requiem!\n"
+                lastStandResults += "and " + Parazon.requiemEquipped[1] + " was the correct second requiem!<br>"
 
                 if (Parazon.requiemEquipped[2] == Lich.requiem[2]) {
                     //good third requiem
-                    lastStandResults += "and " + Parazon.requiemEquipped[2] + " was the correct last requiem!\n"
+                    lastStandResults += "and " + Parazon.requiemEquipped[2] + " was the correct last requiem!<br>"
                     //correct combination
                     finalVictory = true;
                 }
                 else {
                     //incorrect third requiem
                     if (Parazon.requiemEquipped[2] == "(none)") {
-                        lastStandResults += "but you did not have a third requiem mod equipped...\n"
+                        lastStandResults += "but you did not have a third requiem mod equipped...<br>"
                     }
                     else {
-                        lastStandResults += "but " + Parazon.requiemEquipped[2] + " was not the correct last requiem...\n"
+                        lastStandResults += "but " + Parazon.requiemEquipped[2] + " was not the correct last requiem...<br>"
                         Parazon.lastStandKnown = 2;
                     }
                 }
@@ -742,10 +742,10 @@ function lastStand() {
             else {
                 //incorrect second requiem
                 if (Parazon.requiemEquipped[1] == "(none)") {
-                    lastStandResults += "but you did not have a second requiem mod equipped...\n"
+                    lastStandResults += "but you did not have a second requiem mod equipped...<br>"
                 }
                 else {
-                    lastStandResults += "but " + Parazon.requiemEquipped[1] + " was not the correct second requiem...\n"
+                    lastStandResults += "but " + Parazon.requiemEquipped[1] + " was not the correct second requiem...<br>"
                     if (Parazon.lastStandKnown < 1) {
                         Parazon.lastStandKnown = 1;
                     }
@@ -755,15 +755,15 @@ function lastStand() {
         else {
             //incorrect first requiem
             if (Parazon.requiemEquipped[0] == "(none)") {
-                lastStandResults += "but you did not have a first requiem mod equipped...\n"
+                lastStandResults += "but you did not have a first requiem mod equipped...<br>"
             }
             else {
-                lastStandResults += "but " + Parazon.requiemEquipped[0] + " was not the correct first requiem...\n"
+                lastStandResults += "but " + Parazon.requiemEquipped[0] + " was not the correct first requiem...<br>"
             }
         }
 
         if (finalVictory) {
-            lastStandResults += "You finally defeated " + Lich.name + " for good! The system is now free from this particular threat.\n"
+            lastStandResults += "You finally defeated " + Lich.name + " for good! The system is now free from this particular threat.<br>"
             document.getElementById("lichCreate").hidden = false;
             document.getElementById("lichInfo").hidden = true;
             Lich.assets.forEach(asset => {
@@ -776,7 +776,7 @@ function lastStand() {
             Lich.alive = false;
         }
         else {
-            lastStandResults += "Though " + Lich.name + " lies dead, the parazon failed to undo the kuva's curse of immortality. They will be back...\n"
+            lastStandResults += "Though " + Lich.name + " lies dead, the parazon failed to undo the kuva's curse of immortality. They will be back...<br>"
             if (Parazon.lastStandKnown >= 0) {
                 var lastStandHistoric = "Known requiem mod order: "
                 for (let i = 0; i < Parazon.lastStandKnown; i++) {
@@ -797,18 +797,18 @@ function lastStand() {
         }
 
         //weapon acquisition, whether final victory or not.
-        lastStandResults += "Acquired: +" + Lich.bonusDamage + "% " + Lich.element + " Kuva " + Lich.weapon + ".\n";
+        lastStandResults += "Acquired: +" + Lich.bonusDamage + "% " + Lich.element + " Kuva " + Lich.weapon + ".<br>";
         if (!finalVictory) {
             generateWeapon(Lich.weapon, true);
         }
 
-        lastStandResults += "Recovered the entirety of " + Lich.name + "'s treasury:\n"
-            + Lich.treasury.credits + " credits\n"
-            + Lich.treasury.common_resources + " common resources\n"
-        + Lich.treasury.rare_resources + " rare resources\n"
-        + Lich.treasury.mods + " mods\n"
-        + Lich.treasury.relics + " relics\n"
-        + Lich.treasury.blueprints + " blueprint\n";
+        lastStandResults += "Recovered the entirety of " + Lich.name + "'s treasury:<br>"
+            + Lich.treasury.credits + " credits<br>"
+            + Lich.treasury.common_resources + " common resources<br>"
+        + Lich.treasury.rare_resources + " rare resources<br>"
+        + Lich.treasury.mods + " mods<br>"
+        + Lich.treasury.relics + " relics<br>"
+        + Lich.treasury.blueprints + " blueprint<br>";
 
         //removing the recovered loot from the lich's treasury
         Lich.treasury.credits = 0;
@@ -821,11 +821,11 @@ function lastStand() {
         document.getElementById("treasuryDisplay").innerHTML = "(nothing)";
 
         updateLichInfo();
-        alert(lastStandResults);
+        postMessage(lastStandResults);
     }
     else {
         //defeat
-        lastStandResults += "And were defeated... (1/10 chance)\n" + Lich.name + " rallied grineer to " + pronouns[Lich.gender][2] + " banner thanks to " + pronouns[Lich.gender][2] + " unlikely comeback, and regained territory on " + SolarSystem[Lich.territory_edges[0]].planet + ".\n";
+        lastStandResults += "And were defeated... (1/10 chance)<br>" + Lich.name + " rallied grineer to " + pronouns[Lich.gender][2] + " banner thanks to " + pronouns[Lich.gender][2] + " unlikely comeback, and regained territory on " + SolarSystem[Lich.territory_edges[0]].planet + ".<br>";
         //expand() a few times, lich gains a ton of XP.
 
         //acquire a trophy
@@ -835,13 +835,13 @@ function lastStand() {
         Lich.assets.push("Warframe_helmet_trophy");
         document.getElementById("assetTier" + Assets["Warframe_helmet_trophy"].tier).hidden = false;
         document.getElementById("Warframe_helmet_trophy").hidden = false;
-        lastStandResults += pronouns[Lich.gender][0] + " also tore the helmet from your destroyed frame, and wears it as a trophy!\n"
+        lastStandResults += pronouns[Lich.gender][0] + " also tore the helmet from your destroyed frame, and wears it as a trophy!<br>"
         }
 
         for (let i = 0; i <= Lich.rank; i++) {
             expand();
         }
-        alert(lastStandResults);
+        postMessage(lastStandResults);
         lichLevelUp(240, 360);
     }
 }
@@ -859,7 +859,7 @@ function commonMissionStuff() {
     var encounterResults = lichEncounter();
 
     if (encounterResults) {
-        alertContent += "You encountered " + Lich.name + "!\n" + encounterResults;
+        alertContent += "You encountered " + Lich.name + "!<br>" + encounterResults;
     }
     else {
         var angerGain = getRndInteger(4, 20); //anger is 0-100
@@ -867,18 +867,18 @@ function commonMissionStuff() {
     }
 
 
-    alertContent += Lich.name + " stole the following:\n" + plunder.credits + " credits\n" + plunder.common_resources + " common resources\n";
+    alertContent += Lich.name + " stole the following:<br>" + plunder.credits + " credits<br>" + plunder.common_resources + " common resources<br>";
     if (plunder.rare_resources) {
-        alertContent += plunder.rare_resources + " rare resources\n";
+        alertContent += plunder.rare_resources + " rare resources<br>";
     }
     if (plunder.mods) {
-        alertContent += plunder.mods + " mods\n";
+        alertContent += plunder.mods + " mods<br>";
     }
     if (plunder.relics) {
-        alertContent += plunder.relics + " relics\n";
+        alertContent += plunder.relics + " relics<br>";
     }
     if (plunder.blueprints) {
-        alertContent += plunder.blueprints + " blueprint\n"
+        alertContent += plunder.blueprints + " blueprint<br>"
     }
 
     var missionResults = { intel: intelGain, alertContent: alertContent }
@@ -935,25 +935,25 @@ function lichEncounter() {
         if (Math.random() < 0.9) //90% chance to win
         {
             //win
-            encounterResults += "...and won!\n";
+            encounterResults += "...and won!<br>";
             lichLevelUp(getRndInteger(80, 120)); //still a nice chunk of XP if the lich loses.
             murmurResults = murmurs();
             if (!isNaN(murmurResults)) //need three mods on the parazon to test the combination
             {
-                encounterResults += "The requiem combination " + Parazon.requiemEquipped[0] + ", " + Parazon.requiemEquipped[1] + ", " + Parazon.requiemEquipped[2] + " contains " + murmurResults + " correct mods.\n";
+                encounterResults += "The requiem combination " + Parazon.requiemEquipped[0] + ", " + Parazon.requiemEquipped[1] + ", " + Parazon.requiemEquipped[2] + " contains " + murmurResults + " correct mods.<br>";
             }
             else {
-                encounterResults += "You did not have three requiem mods equipped, no combination was tested.\n";
+                encounterResults += "You did not have three requiem mods equipped, no combination was tested.<br>";
             }
             if (weaponBiometricsBroken) {
-                encounterResults += "Acquired: +" + Lich.bonusDamage + "% " + Lich.element + " Kuva " + Lich.weapon + ".\n";
+                encounterResults += "Acquired: +" + Lich.bonusDamage + "% " + Lich.element + " Kuva " + Lich.weapon + ".<br>";
                 generateWeapon(Lich.weapon, true);
             }
         }
         else //10% chance to lose
         {
             //lose
-            encounterResults += "...and lost! (1/10 chance in this demo)\n";
+            encounterResults += "...and lost! (1/10 chance in this demo)<br>";
             lichLevelUp(getRndInteger(200, 300)); // a LOT of XP to the Lich if you lose.
 
             //acquire a trophy sometimes
@@ -963,7 +963,7 @@ function lichEncounter() {
             Lich.assets.push("Warframe_helmet_trophy");
             document.getElementById("assetTier" + Assets["Warframe_helmet_trophy"].tier).hidden = false;
             document.getElementById("Warframe_helmet_trophy").hidden = false;
-            encounterResults += pronouns[Lich.gender][0] + " also tore the helmet from your destroyed frame, and wears it as a trophy!\n"
+            encounterResults += pronouns[Lich.gender][0] + " also tore the helmet from your destroyed frame, and wears it as a trophy!<br>"
             }
         }
         Lich.anger = 0;
@@ -1100,6 +1100,24 @@ function murmurs() //this is where the computer play Mastermind (for regular enc
 // ++
 //UI AND MISC UTILITY STUFF
 // ++
+
+//The big messaging function to replace the alert() popups
+function postMessage(message)
+{
+    messageBoard = document.getElementById("messages");
+
+    var newOption = document.createElement("div");
+    newOption.class = "mission";
+    newOption.innerHTML = message + "<br>--------";
+
+    messageBoard.insertBefore(newOption, messageBoard.firstElementChild);
+
+    if(messageBoard.childElementCount > 5) //limit of 5 messages for now
+    {
+        messageBoard.removeChild(messageBoard.lastElementChild);
+    }
+
+}
 
 //because rank, XP, weapon, element are gonna change often, so this here is convenient
 function updateLichInfo() {
