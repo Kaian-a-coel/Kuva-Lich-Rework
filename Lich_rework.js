@@ -26,9 +26,11 @@ var Lich = {
     territory_locked: []
 };
 
+const NO_EQUIPPED_REQUIEM = "(none)";
+
 //tracking equipped mods, attempted combinations, etc.
 var Parazon = {
-    requiemEquipped: ["(none)", "(none)", "(none)"], //currently equipped mods
+    requiemEquipped: new Array(3).fill(NO_EQUIPPED_REQUIEM), //currently equipped mods
     requiemHistory: [], //push parazon code there after each encounter, with the number of valid mods.
     requiemModsStatus: { Fass: "?", Jahu: "?", Khra: "?", Lohk: "?", Netra: "?", Ris: "?", Vome: "?", Xata: "?" }, //unknown, valid, invalid.
     lastStandKnown: 0
@@ -49,95 +51,131 @@ const firstNames = ["Abahela", "Abuhbik", "Adihk", "Aditt", "Aff", "Afteve", "Ag
 const lastNames = ["Abekk", "Abrnia", "Aff", "Agekan", "Agg", "Aikr", "Airg", "Aizogg", "Ajiror", "Ak'duhovo", "Akan", "Akiben", "Akipu", "Amokk", "App", "Arikk", "Arott", "Aruvt", "Ashg", "Asuduko", "Asugg", "Asuhibi", "Asul", "Asutikk", "Axulo", "Bekakk", "Bidd", "Bikk", "Bivtiss", "Crbenn", "Crbiss", "Crgdbrb", "Crirr", "Cromm", "Crosygg", "Cruhod", "Crur", "Dediga", "Delo", "Diss", "Divi", "Dora'fibb", "Dorzoff", "Duu", "Edudz", "Egg", "Ek'agg", "Ek'k", "Ekarboif", "Enukk", "Faba", "Fahobur", "Fanenirr", "Fangg", "Fann", "Fegaboabb", "Fegi", "Feglibo", "Fenurr", "Fetomm", "Fikk", "Firr", "Fishobe", "Fiss", "Fitt", "Fudu", "Furgang", "Fuzbam", "Gaa", "Gabb", "Gagelp", "Gahkk", "Gahl", "Gakk", "Ganabrzz", "Ganikk", "Gapp", "Grgik", "Grpesu", "Ha'he", "Hak", "Haka", "Harb", "Haree", "Hatanar", "Hekk", "Heloo", "Herah", "Hevo", "Hiji", "Hikrzz", "Hitt", "Imm", "Imuho", "Jann", "Jed", "Jelipta", "Jobevta", "Jokh", "Jorr", "Kaa", "Kakann", "Karkakan", "Khdifngrg", "Kodz'fu", "Koff", "Kombavv", "Kranedij", "Ledd", "Likk", "Lilo", "Lipp", "Loree", "Lorr", "Lorz'hl", "Lorzz", "Lushokh", "Mabed'di", "Magodd", "Mane", "Mekk", "Melikoff", "Menn", "Meviss", "Migg", "Miji", "Mobil", "Mobonik", "Morgiss", "Mosygg", "Movupt", "Norr", "Nott", "Obb", "Ogekev", "Ogg", "Ogudilv", "Omoib", "Rapp", "Rekk", "Roo", "Rul'f", "Sangebo", "Sann", "Sipp", "Siss", "Soig", "Sokk", "Sorr", "Sostukk", "Sozonge", "Stakk", "Stanika", "Stath", "Sthorr", "Stij", "Straho", "Strn", "Stsuhli", "Tabb", "Tagr", "Tamobeko", "Tapp", "Tebikk", "Tett", "Tiduhdu", "Tijorvokk", "Tili", "Tuloo", "Turidi", "Tygg", "Udabel", "Udd", "Udiaba", "Udigg", "Udrbra", "Ududiss", "Udzbo", "Ul'fngg", "Uligg", "Vach", "Vakk", "Varorngg", "Vataba", "Vavenn", "Vobakk", "Vorr", "Votanul", "Yosykk", "Zachg", "Zevil"];
 const genders = ["male", "female"];
 const pronouns = {male:["he", "him", "his"], female:["she", "her", "her"]};
+const solarSystemNodeStatus = {free: "free",occupied: "occupied"};
 
 //SOLAR SYSTEM
 //Solar system. Contains all the nodes, their neighbours, and whether they are free or occupied.
-var SolarSystem = {
-    Appolodorus: { planet: "Mercury", status: "free", neighbours: ["Boethius"] },
-    Boethius: { planet: "Mercury", status: "free", neighbours: ["Appolodorus", "M_prime"] },
-    Caloris: { planet: "Mercury", status: "free", neighbours: ["Elion", "Pantheon"] },
-    Elion: { planet: "Mercury", status: "free", neighbours: ["Caloris", "Suisei"] },
-    Lares: { planet: "Mercury", status: "free", neighbours: ["Terminus"] },
-    M_prime: { planet: "Mercury", status: "free", neighbours: ["Boethius", "Terminus", "Pantheon", "Aphrodite"] }, //Venus junction: Pantheon and Aphrodite.
-    Odin: { planet: "Mercury", status: "free", neighbours: ["Suisei"] },
-    Pantheon: { planet: "Mercury", status: "free", neighbours: ["Caloris", "M_prime", "Aphrodite"] }, //Venus junction: M_prime and Aphrodite
-    Suisei: { planet: "Mercury", status: "free", neighbours: ["Elion", "Odin", "Tolstoj"] },
-    Terminus: { planet: "Mercury", status: "free", neighbours: ["Lares", "M_prime"] },
-    Tolstoj: { planet: "Mercury", status: "free", neighbours: ["Suisei"] },
+const SolarSystem = {
+    addNode: function(name,planet,neighbours) {
+        SolarSystem[name] = {
+            planet: planet,
+            status: solarSystemNodeStatus.free,
+            neighbours: neighbours
+        };
+    }
+};
+const Planets = {
+    Mercury: {
+        Appolodorus: ["Boethius"],
+        Boethius: ["Appolodorus", "M_prime"],
+        Caloris: ["Elion", "Pantheon"],
+        Elion: ["Caloris", "Suisei"],
+        Lares: ["Terminus"],
+        M_prime: ["Boethius", "Terminus", "Pantheon", "Aphrodite"], //Venus junction: Pantheon and Aphrodite.
+        Odin: ["Suisei"],
+        Pantheon: ["Caloris", "M_prime", "Aphrodite"], //Venus junction: M_prime and Aphrodite
+        Suisei: ["Elion", "Odin", "Tolstoj"],
+        Terminus: ["Lares", "M_prime"],
+        Tolstoj: ["Suisei"],
+    },
+    Venus: {
+        Aphrodite: ["Fossa", "Kiliken", "Venera", "M_prime", "Pantheon"], //mercury junction: M_prime and Pantheon
+        Cytherean: ["Kiliken"],
+        E_gate: ["Tessera", "Unda", "V_prime", "Cambria"], //Earth junction: Cambria
+        Ishtar: ["Linea", "Montes", "Malva"],
+        Kiliken: ["Aphrodite", "Cytherean", "Unda"],
+        Linea: ["Ishtar", "Tessera"],
+        Malva: ["Ishtar"],
+        Montes: ["Ishtar"],
+        Romula: ["V_prime"],
+        Tessera: ["Linea", "Venera", "E_gate"],
+        Unda: ["Kiliken", "Venera", "E_gate", "Fortuna"],
+        Venera: ["Aphrodite", "Unda", "Tessera"],
+        V_prime: ["E_gate", "Romula"],
+        Fossa: ["Aphrodite"],
+        Fortuna: ["Unda"],
+    },
+    Earth: {
+        Cambria: ["Gaia", "Lith", "E_gate"], //Venus junction: E_gate
+        Cervantes: ["Everest", "Erpo"],
+        E_prime: ["Mariana"],
+        Erpo: ["Cervantes", "Oro"],
+        Eurasia: ["Plains_of_eidolon"], //Mars junction: [NOT INCLUDED]
+        Everest: ["Coba", "Plains_of_eidolon", "Cervantes"],
+        Gaia: ["Pacific", "Mantle", "Cambria"],
+        Lith: ["Mantle", "Cambria"],
+        Mantle: ["Mariana", "Plains_of_eidolon", "Lith", "Gaia"],
+        Mariana: ["E_prime", "Mantle"],
+        Pacific: ["Gaia"],
+        Coba: ["Everest"],
+        Tikal: ["Oro"],
+        Oro: ["Erpo","Tikal"],
+        Plains_of_eidolon: ["Eurasia", "Everest", "Mantle"],
+    }
 
-    Aphrodite: { planet: "Venus", status: "free", neighbours: ["Fossa", "Kiliken", "Venera", "M_prime", "Pantheon"] }, //mercury junction: M_prime and Pantheon
-    Cytherean: { planet: "Venus", status: "free", neighbours: ["Kiliken"] },
-    E_gate: { planet: "Venus", status: "free", neighbours: ["Tessera", "Unda", "V_prime", "Cambria"] }, //Earth junction: Cambria
-    Ishtar: { planet: "Venus", status: "free", neighbours: ["Linea", "Montes", "Malva"] },
-    Kiliken: { planet: "Venus", status: "free", neighbours: ["Aphrodite", "Cytherean", "Unda"] },
-    Linea: { planet: "Venus", status: "free", neighbours: ["Ishtar", "Tessera"] },
-    Malva: { planet: "Venus", status: "free", neighbours: ["Ishtar"] },
-    Montes: { planet: "Venus", status: "free", neighbours: ["Ishtar"] },
-    Romula: { planet: "Venus", status: "free", neighbours: ["V_prime"] },
-    Tessera: { planet: "Venus", status: "free", neighbours: ["Linea", "Venera", "E_gate"] },
-    Unda: { planet: "Venus", status: "free", neighbours: ["Kiliken", "Venera", "E_gate", "Fortuna"] },
-    Venera: { planet: "Venus", status: "free", neighbours: ["Aphrodite", "Unda", "Tessera"] },
-    V_prime: { planet: "Venus", status: "free", neighbours: ["E_gate", "Romula"] },
-    Fossa: { planet: "Venus", status: "free", neighbours: ["Aphrodite"] },
-    Fortuna: { planet: "Venus", status: "free", neighbours: ["Unda"] },
-
-    Cambria: { planet: "Earth", status: "free", neighbours: ["Gaia", "Lith", "E_gate"] }, //Venus junction: E_gate
-    Cervantes: { planet: "Earth", status: "free", neighbours: ["Everest", "Erpo"] },
-    E_prime: { planet: "Earth", status: "free", neighbours: ["Mariana"] },
-    Erpo: { planet: "Earth", status: "free", neighbours: ["Cervantes", "Oro"] },
-    Eurasia: { planet: "Earth", status: "free", neighbours: ["Plains_of_eidolon"] }, //Mars junction: [NOT INCLUDED]
-    Everest: { planet: "Earth", status: "free", neighbours: ["Coba", "Plains_of_eidolon", "Cervantes"] },
-    Gaia: { planet: "Earth", status: "free", neighbours: ["Pacific", "Mantle", "Cambria"] },
-    Lith: { planet: "Earth", status: "free", neighbours: ["Mantle", "Cambria"] },
-    Mantle: { planet: "Earth", status: "free", neighbours: ["Mariana", "Plains_of_eidolon", "Lith", "Gaia"] },
-    Mariana: { planet: "Earth", status: "free", neighbours: ["E_prime", "Mantle"] },
-    Pacific: { planet: "Earth", status: "free", neighbours: ["Gaia"] },
-    Coba: { planet: "Earth", status: "free", neighbours: ["Everest"] },
-    Tikal: { planet: "Earth", status: "free", neighbours: ["Oro"] },
-    Oro: { planet: "Earth", status: "free", neighbours: ["Erpo", "Tikal"] },
-    Plains_of_eidolon: { planet: "Earth", status: "free", neighbours: ["Eurasia", "Everest", "Mantle"] },
 }
+//Populate SolarSystem with Planets data
+Object.entries(Planets).forEach(planet => {
+    const planetName = planet[0];
+    const planetData = planet[1];
+    Object.entries(planetData).forEach(node => {
+        const nodeName = node[0];
+        const nodeNeighbors = node[1];
+        SolarSystem.addNode(nodeName,planetName,nodeNeighbors);
+    })
+})
+
 //This is necessary for selecting random nodes from scratch (lich spawn) and for eventual foreach(node) on (planet).
 const planetsCatalogue = { Mercury: 0, Venus: 1, Earth: 2 }; //this is jank, CHANGE IT.
-const SolarSystemCatalogue = [["Appolodorus", "Boethius", "Caloris", "Elion", "Lares", "M_prime", "Odin", "Pantheon", "Suisei", "Terminus", "Tolstoj"], //Mercury
-["Aphrodite", "Cytherean", "E_gate", "Ishtar", "Kiliken", "Linea", "Malva", "Montes", "Romula", "Tessera", "Unda", "Venera", "V_prime", "Fossa", "Fortuna"],// Venus
-["Cambria", "Cervantes", "E_prime", "Erpo", "Eurasia", "Everest", "Gaia", "Lith", "Mantle", "Mariana", "Pacific", "Coba", "Tikal", "Oro", "Plains_of_eidolon"]]; //Earth 
+
+const getPlanetNodeNames = planet => Object.keys(planet);
+const SolarSystemCatalogue = [
+    getPlanetNodeNames(Planets.Mercury),
+    getPlanetNodeNames(Planets.Venus),
+    getPlanetNodeNames(Planets.Earth)
+] ;
 
 //ASSETS
 //model:{tier:0, owned:false, type:"", effects:"", rewards:""}, //intelCost is 100*tier. Subject to balance.
 //possible types: equipment (destroyed by sabotage), personnel (exterminate/sabotage), specialist (capture/assassination).
 //Empyrean/Railjack stuff can be slotted into this system relatively easily. A galleon could be a tier 5 equipment for example.
 var Assets = {
-    Crate_of_grattlers: { tier: 1, owned: false, type: "equipment", effects: "Replace heavy gunner thralls and all heavy gunners in Lich missions with Tusk heavy gunners.", rewards: "Grattler blueprint, Gravimag." },
-    Indiscriminate_security_system: { tier: 1, owned: false, type: "equipment", effects: "Lich missions are susceptible to have environmental hazards. Type depends on Lich element (fire, cold, magnetic, radiation...)", rewards: "Something elemental related. Mods probably." },
-    Trap_master: { tier: 1, owned: false, type: "specialist", effects: "Shock traps, fragmentation mines (from kuva fortress), turret rollers (from rathuum), and magnetic door fields, appear in lich missions.", rewards: "A chat ban." },
-    Ghoul_pack: { tier: 1, owned: false, type: "personnel", effects: "Ghouls in lich missions.", rewards: "ghoul drops." },
-    Warframe_helmet_trophy: {tier:1, owned:false, type:"trophy", effects:"The Lich has your helmet on their shoulder and calls you a loser. Also some ability theft.", rewards:"Lich loses the stolen ability, recovering your honor."}, //This is not obtainable randomly, but by the lich defeating you.
+    Crate_of_grattlers: { tier: 1, type: "equipment", effects: "Replace heavy gunner thralls and all heavy gunners in Lich missions with Tusk heavy gunners.", rewards: "Grattler blueprint, Gravimag." },
+    Indiscriminate_security_system: { tier: 1, type: "equipment", effects: "Lich missions are susceptible to have environmental hazards. Type depends on Lich element (fire, cold, magnetic, radiation...)", rewards: "Something elemental related. Mods probably." },
+    Trap_master: { tier: 1, type: "specialist", effects: "Shock traps, fragmentation mines (from kuva fortress), turret rollers (from rathuum), and magnetic door fields, appear in lich missions.", rewards: "A chat ban." },
+    Ghoul_pack: { tier: 1, type: "personnel", effects: "Ghouls in lich missions.", rewards: "ghoul drops." },
+    Warframe_helmet_trophy: {tier:1, type:"trophy", effects:"The Lich has your helmet on their shoulder and calls you a loser. Also some ability theft.", rewards:"Lich loses the stolen ability, recovering your honor."}, //This is not obtainable randomly, but by the lich defeating you.
 
-    Kuva_guardians_bodyguards: { tier: 2, owned: false, type: "personnel", effects: "Lich spawns accompanied by two Kuva Guardians. Guardians occasionally appear in lich missions.", rewards: "Kesheg blueprint, kuva and kuva associated paraphernalia." },
-    Beastmaster: { tier: 2, owned: false, type: "specialist", effects: "Hyekka and Drakk masters are a lot more common, and their beasts are more dangerous.", rewards: "Companion mods, those hyekka/Drakk imprints that the cetus guy sells..." },
+    Kuva_guardians_bodyguards: { tier: 2, type: "personnel", effects: "Lich spawns accompanied by two Kuva Guardians. Guardians occasionally appear in lich missions.", rewards: "Kesheg blueprint, kuva and kuva associated paraphernalia." },
+    Beastmaster: { tier: 2, type: "specialist", effects: "Hyekka and Drakk masters are a lot more common, and their beasts are more dangerous.", rewards: "Companion mods, those hyekka/Drakk imprints that the cetus guy sells..." },
 
-    Cybersecurity_expert: { tier: 3, owned: false, type: "specialist", effects: "Makes hacking in lich missions more difficult (e.g. more pips). Shortens hacking time. Disable the use of ciphers.", rewards: "Parazon mods, spy rewards, a bunch of ciphers." },
-    Manics_cloning_tubes: { tier: 3, owned: false, type: "personnel", effects: "Manics spawn frequently in Lich missions.", rewards: "Ash alt helmets, dagger blueprints and mods..." },
-    Lone_smuggler: { tier: 3, owned: false, type: "specialist", effects: "More mission rewards stolen. Destroying it is an Archwing mission.", rewards: "Archwing mods and stuff." },
-    Disruptor_pulse_backpacks: { tier: 3, owned: false, type: "equipment", effects: "Some elite thralls may carry disruptor packs, emitting red nullifier pulses.", rewards: "I don't know" },
+    Cybersecurity_expert: { tier: 3, type: "specialist", effects: "Makes hacking in lich missions more difficult (e.g. more pips). Shortens hacking time. Disable the use of ciphers.", rewards: "Parazon mods, spy rewards, a bunch of ciphers." },
+    Manics_cloning_tubes: { tier: 3, type: "personnel", effects: "Manics spawn frequently in Lich missions.", rewards: "Ash alt helmets, dagger blueprints and mods..." },
+    Lone_smuggler: { tier: 3, type: "specialist", effects: "More mission rewards stolen. Destroying it is an Archwing mission.", rewards: "Archwing mods and stuff." },
+    Disruptor_pulse_backpacks: { tier: 3, type: "equipment", effects: "Some elite thralls may carry disruptor packs, emitting red nullifier pulses.", rewards: "I don't know" },
 
-    Secret_bunkers_network: { tier: 4, owned: false, type: "equipment", effects: "Intel costs increased by 50% due to the difficulty to track thrall cells.", rewards: "Not having to deal with the increased costs?" },
-    Fast_response_strike_squad: { tier: 4, owned: false, type: "personnel", effects: "An elite eximus thrall death squad may teleport onto the offending tenno with little warning during lich missions.", rewards: "spectre blueprints" },
-    Demented_doctor: { tier: 4, owned: false, type: "specialist", effects: "Low ranking thralls may turn into heavy infested units when the battle turn against the lich's forces. Possibility of mission-wide hazardous atmosphere.", rewards: "Infested/defection related stuff." },
+    Secret_bunkers_network: { tier: 4, type: "equipment", effects: "Intel costs increased by 50% due to the difficulty to track thrall cells.", rewards: "Not having to deal with the increased costs?" },
+    Fast_response_strike_squad: { tier: 4, type: "personnel", effects: "An elite eximus thrall death squad may teleport onto the offending tenno with little warning during lich missions.", rewards: "spectre blueprints" },
+    Demented_doctor: { tier: 4, type: "specialist", effects: "Low ranking thralls may turn into heavy infested units when the battle turn against the lich's forces. Possibility of mission-wide hazardous atmosphere.", rewards: "Infested/defection related stuff." },
 
-    Nightwatch_support: { tier: 5, owned: false, type: "personnel", effects: "Regular grineer thralls and some Lich mission units replaced by Nightwatch elites.", rewards: "Whatever nightwatch alerts rewarded." },
-    Rathuum_executioner: { tier: 5, owned: false, type: "specialist", effects: "An elite rathuum executioner may appear in lich missions (always the same).", rewards: "Endo, rathuum/Kela mods." },
+    Nightwatch_support: { tier: 5, type: "personnel", effects: "Regular grineer thralls and some Lich mission units replaced by Nightwatch elites.", rewards: "Whatever nightwatch alerts rewarded." },
+    Rathuum_executioner: { tier: 5, type: "specialist", effects: "An elite rathuum executioner may appear in lich missions (always the same).", rewards: "Endo, rathuum/Kela mods." },
 }
 
 //needed for random selection, since that can't be done as easily on associative arrays.
-const assetsList = [
-    ["Crate_of_grattlers", "Indiscriminate_security_system", "Trap_master", "Ghoul_pack", "Warframe_helmet_trophy"], //tier 1
-    ["Kuva_guardians_bodyguards", "Beastmaster"], //tier 2
-    ["Cybersecurity_expert", "Manics_cloning_tubes", "Lone_smuggler", "Disruptor_pulse_backpacks"], //tier 3
-    ["Secret_bunkers_network", "Fast_response_strike_squad", "Demented_doctor"], //tier 4
-    ["Nightwatch_support", "Rathuum_executioner"] //tier 5
-]
+const assetsList = [];
+
+Object.entries(Assets).forEach(asset => {
+    //populate assetsList dynamically and provide the default value for 'owned' property
+    const assetName = asset[0];
+    const assetData = asset[1];
+    assetData.owned = false;
+    const index = assetData.tier - 1;
+    if(!assetsList[index]) {
+        assetsList[index] = [];
+    }
+    assetsList[index].push(assetName);
+});
 
 // ++
 //END VARIABLES AND CONSTANT
@@ -284,8 +322,8 @@ function lichGetAsset() {
 
 function conquer(node) {
     //don't do anything if node is already occupied you'll fuck up otherwise
-    if (SolarSystem[node].status == "free") {
-        SolarSystem[node].status = "occupied" //set the node as occupied
+    if (SolarSystem[node].status == solarSystemNodeStatus.free) {
+        SolarSystem[node].status = solarSystemNodeStatus.occupied //set the node as occupied
         document.getElementById(node + "Expel").hidden = false;
         //put the node in lich territory list as edge or locked (depending on whether there are free nodes adjacent)
         if (checkLocked(node)) {
@@ -296,7 +334,7 @@ function conquer(node) {
         }
 
         SolarSystem[node]["neighbours"].forEach(neighbour => {
-            if (SolarSystem[neighbour].status == "occupied") //if neighbour is occupied
+            if (SolarSystem[neighbour].status == solarSystemNodeStatus.occupied) //if neighbour is occupied
             {
                 if (checkLocked(neighbour)) //check if it is newly locked
                 {
@@ -321,8 +359,8 @@ function conquer(node) {
 
 function liberate(node) {
     //don't do anything if node is already free you'll fuck up otherwise
-    if (SolarSystem[node].status == "occupied") {
-        SolarSystem[node].status = "free" //set the node as occupied
+    if (SolarSystem[node].status == solarSystemNodeStatus.occupied) {
+        SolarSystem[node].status = solarSystemNodeStatus.free //set the node as occupied
         document.getElementById(node + "Expel").hidden = true;
 
         //remove node from lich territory. From locked if locked, from edge otherwise.
@@ -342,7 +380,7 @@ function liberate(node) {
         }
 
         SolarSystem[node]["neighbours"].forEach(neighbour => {
-            if (SolarSystem[neighbour].status == "occupied") //if neighbour is occupied
+            if (SolarSystem[neighbour].status == solarSystemNodeStatus.occupied) //if neighbour is occupied
             {
                 if (Lich.territory_locked.findIndex(findNodeIndex, neighbour) >= 0)//if it is in the locked index, move it to edges (because it's no longer locked)
                 {
@@ -371,9 +409,9 @@ function expand() {
             expansionTarget = expansionStart.neighbours[getRndInteger(0, (expansionStart.neighbours.length) - 1)];
             loopCounter++;
         } //try and find a target.
-        while (SolarSystem[expansionTarget].status != "free" && loopCounter < 20);
+        while (SolarSystem[expansionTarget].status != solarSystemNodeStatus.free && loopCounter < 20);
 
-        if (SolarSystem[expansionTarget].status == "free") {
+        if (SolarSystem[expansionTarget].status == solarSystemNodeStatus.free) {
             conquer(expansionTarget);
         }
     }
@@ -414,7 +452,7 @@ function findNodeIndex(checkedNode) {
 function checkLocked(node) {
     var locked = true;
     SolarSystem[node]["neighbours"].forEach(neighbour => {
-        if (SolarSystem[neighbour].status == "free") {
+        if (SolarSystem[neighbour].status == solarSystemNodeStatus.free) {
             locked = false;
         }
     });
@@ -470,7 +508,7 @@ function dailyTick() {
 
 //this is the basic mission. When you run a node normally. No fuss. Nothing special.
 function basicMission(node) {
-    if (SolarSystem[node].status == "free") {
+    if (SolarSystem[node].status == solarSystemNodeStatus.free) {
         postMessage(node + " is free of lich activity.")
     }
     else {
@@ -483,7 +521,7 @@ function basicMission(node) {
 
 //this is the mission to liberate a specific node.
 function expelMission(node) {
-    if (SolarSystem[node].status == "free") {
+    if (SolarSystem[node].status == solarSystemNodeStatus.free) {
         postMessage(node + " is free of lich activity.")
     }
     else {
@@ -730,7 +768,7 @@ function lastStand() {
                 }
                 else {
                     //incorrect third requiem
-                    if (Parazon.requiemEquipped[2] == "(none)") {
+                    if (Parazon.requiemEquipped[2] == NO_EQUIPPED_REQUIEM) {
                         lastStandResults += "but you did not have a third requiem mod equipped...<br>"
                     }
                     else {
@@ -741,7 +779,7 @@ function lastStand() {
             }
             else {
                 //incorrect second requiem
-                if (Parazon.requiemEquipped[1] == "(none)") {
+                if (Parazon.requiemEquipped[1] == NO_EQUIPPED_REQUIEM) {
                     lastStandResults += "but you did not have a second requiem mod equipped...<br>"
                 }
                 else {
@@ -754,7 +792,7 @@ function lastStand() {
         }
         else {
             //incorrect first requiem
-            if (Parazon.requiemEquipped[0] == "(none)") {
+            if (Parazon.requiemEquipped[0] == NO_EQUIPPED_REQUIEM) {
                 lastStandResults += "but you did not have a first requiem mod equipped...<br>"
             }
             else {
@@ -989,15 +1027,15 @@ function updateParazon(node, number) {
         node.classList.add('selected')
         if (number != 0 && document.getElementById("firstParazonMod").selectedIndex == node.selectedIndex) {
             document.getElementById("firstParazonMod").selectedIndex = 0;
-            Parazon.requiemEquipped[0] = "(none)";
+            Parazon.requiemEquipped[0] = NO_EQUIPPED_REQUIEM;
         }
         if (number != 1 && document.getElementById("secondParazonMod").selectedIndex == node.selectedIndex) {
             document.getElementById("secondParazonMod").selectedIndex = 0;
-            Parazon.requiemEquipped[1] = "(none)";
+            Parazon.requiemEquipped[1] = NO_EQUIPPED_REQUIEM;
         }
         if (number != 2 && document.getElementById("thirdParazonMod").selectedIndex == node.selectedIndex) {
             document.getElementById("thirdParazonMod").selectedIndex = 0;
-            Parazon.requiemEquipped[2] = "(none)";
+            Parazon.requiemEquipped[2] = NO_EQUIPPED_REQUIEM;
         }
     }  else {
         node.classList.remove('selected')
@@ -1009,9 +1047,15 @@ function updateParazon(node, number) {
 
 function murmurs() //this is where the computer play Mastermind (for regular encounters);
 {
-    if (Parazon.requiemEquipped[0] != "(none)" && Parazon.requiemEquipped[1] != "(none)" && Parazon.requiemEquipped[2] != "(none)") {
-        var numberOfCorrectGuesses = 0;
-        Parazon.requiemEquipped.forEach(equippedMod => {
+    const requiemEquipped = Parazon.requiemEquipped;
+
+    const requiem1 = requiemEquipped[0];
+    const requiem2 = requiemEquipped[1];
+    const requiem3 = requiemEquipped[2];
+
+    if (requiem1 != NO_EQUIPPED_REQUIEM && requiem2 != NO_EQUIPPED_REQUIEM && requiem3 != NO_EQUIPPED_REQUIEM) {
+        let numberOfCorrectGuesses = 0;
+        requiemEquipped.forEach(equippedMod => {
             Lich.requiem.forEach(targetMod => {
                 if (equippedMod == targetMod) {
                     numberOfCorrectGuesses++;
@@ -1019,71 +1063,71 @@ function murmurs() //this is where the computer play Mastermind (for regular enc
             });
         });
 
+        const modsStatus = Parazon.requiemModsStatus;
+        
+        let status1 = modsStatus[requiem1];
+        let status2 = modsStatus[requiem2];
+        let status3 = modsStatus[requiem3];
+        
+        const setModsStatus = (requiem,value) => modsStatus[requiem] = value;
+        const setCorrect = requiem => setModsStatus(requiem,true);
+        const setIncorrect = requiem => setModsStatus(requiem,false);
+        
         if (numberOfCorrectGuesses == 0) {
-            Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] = false;
-            Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] = false;
-            Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] = false;
+            setIncorrect(requiem1);
+            setIncorrect(requiem2);
+            setIncorrect(requiem3);
         }
-        else if (numberOfCorrectGuesses == 1) {
-            if (Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] == true) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] = false;
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] = false;
-            }
-            else if (Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] == true) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] = false;
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] = false;
-            }
-            else if (Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] == true) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] = false;
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] = false;
+        else if(numberOfCorrectGuesses === 1 || numberOfCorrectGuesses === 2) {
+            let setStatusForCorrect, setStatusForIncorrect;
+
+            if(numberOfCorrectGuesses === 1) {
+                setStatusForCorrect = setIncorrect;
+                setStatusForIncorrect = setCorrect;
+            } else {
+                setStatusForCorrect = setCorrect;
+                setStatusForIncorrect = setIncorrect;
+
+                status1 = !status1;
+                status2 = !status2;
+                status3 = !status3;
             }
 
-            else if (Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] == false && Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] == false) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] = true;
+            if (status1) {
+                setStatusForCorrect(requiem2);
+                setStatusForCorrect(requiem3);
             }
-            else if (Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] == false && Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] == false) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] = true;
+            else if (status2) {
+                setStatusForCorrect(requiem1);
+                setStatusForCorrect(requiem3);
             }
-            else if (Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] == false && Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] == false) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] = true;
-            };
-        }
-        else if (numberOfCorrectGuesses == 2) {
-            if (Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] == false) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] = true;
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] = true;
+            else if (status3) {
+                setStatusForCorrect(requiem1);
+                setStatusForCorrect(requiem2);
             }
-            else if (Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] == false) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] = true;
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] = true;
+        
+            else if (!status1 && !status2) {
+                setStatusForIncorrect(requiem3);
             }
-            else if (Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] == false) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] = true;
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] = true;
+            else if (!status2 && !status3) {
+                setStatusForIncorrect(requiem1);
             }
-
-            else if (Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] == true && Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] == true) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] = false;
-            }
-            else if (Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] == true && Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] == true) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] = false;
-            }
-            else if (Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] == true && Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] == true) {
-                Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] = false;
+            else if (!status1 && !status3) {
+                setStatusForIncorrect(requiem2);
             };
         }
         else if (numberOfCorrectGuesses == 3) {
-            Parazon.requiemModsStatus[Parazon.requiemEquipped[0]] = true;
-            Parazon.requiemModsStatus[Parazon.requiemEquipped[1]] = true;
-            Parazon.requiemModsStatus[Parazon.requiemEquipped[2]] = true;
+            setCorrect(requiem1);
+            setCorrect(requiem2);
+            setCorrect(requiem3);
         }
         //This whole thing detects and updates requiemModsStatus
 
         updateKnownRequiems();
 
-        var attemptNote = [Parazon.requiemEquipped[0], Parazon.requiemEquipped[1], Parazon.requiemEquipped[2], numberOfCorrectGuesses];
+        const attemptNote = [requiem1, requiem2, requiem3, numberOfCorrectGuesses];
         Parazon.requiemHistory.push(attemptNote);
-        var newArchive = document.createElement("p");
+        const newArchive = document.createElement("p");
         newArchive.innerHTML = "Attempt number " + Parazon.requiemHistory.length + ": " + attemptNote[0] + ", " + attemptNote[1] + ", " + attemptNote[2] + ". " + attemptNote[3] + " of those are correct.";
         document.getElementById("murmurAttemptsHistory").appendChild(newArchive);
         return numberOfCorrectGuesses;
@@ -1208,8 +1252,8 @@ function updateKnownRequiems() {
 
 function populateParazonDropdowns(node) {
     var newOption = document.createElement("option");
-    newOption.value = "(none)";
-    newOption.innerHTML = "(none)";
+    newOption.value = NO_EQUIPPED_REQUIEM;
+    newOption.innerHTML = NO_EQUIPPED_REQUIEM;
     node.appendChild(newOption);
 
     requiemModsList.forEach(requiemMod => {
