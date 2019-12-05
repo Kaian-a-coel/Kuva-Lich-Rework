@@ -30,7 +30,7 @@ const NO_EQUIPPED_REQUIEM = "(none)";
 
 //tracking equipped mods, attempted combinations, etc.
 var Parazon = {
-    requiemEquipped: new Array(3).fill(NO_EQUIPPED_REQUIEM), //currently equipped mods
+    requiemEquipped: [NO_EQUIPPED_REQUIEM, NO_EQUIPPED_REQUIEM, NO_EQUIPPED_REQUIEM], //currently equipped mods
     requiemHistory: [], //push parazon code there after each encounter, with the number of valid mods.
     requiemModsStatus: { Fass: "?", Jahu: "?", Khra: "?", Lohk: "?", Netra: "?", Ris: "?", Vome: "?", Xata: "?" }, //unknown, valid, invalid.
     lastStandKnown: 0
@@ -1065,9 +1065,9 @@ function murmurs() //this is where the computer play Mastermind (for regular enc
 
         const modsStatus = Parazon.requiemModsStatus;
         
-        const status1 = modsStatus[requiem1];
-        const status2 = modsStatus[requiem2];
-        const status3 = modsStatus[requiem3];
+        let status1 = modsStatus[requiem1];
+        let status2 = modsStatus[requiem2];
+        let status3 = modsStatus[requiem3];
         
         const setModsStatus = (requiem,value) => modsStatus[requiem] = value;
         const setCorrect = requiem => setModsStatus(requiem,true);
@@ -1087,6 +1087,10 @@ function murmurs() //this is where the computer play Mastermind (for regular enc
             } else {
                 setStatusForCorrect = setCorrect;
                 setStatusForIncorrect = setIncorrect;
+
+                status1 = !status1;
+                status2 = !status2;
+                status3 = !status3;
             }
 
             if (status1) {
@@ -1341,6 +1345,11 @@ function getRndInteger(min, max) {
 // ++
 //END UI AND MISC UTILITY STUFF
 // ++
+
+
+
+
+
 
 
 // Vesp Stuff
