@@ -28,6 +28,7 @@ ul {
 	font-weight: normal;
 }
 
+
 h1,
 h2,
 h3,
@@ -123,7 +124,6 @@ img {
 
 .main {
 	display: flex;
-	flex-wrap: wrap;
 	justify-content: space-between;
 	align-items: start;
 	max-width: 1280px;
@@ -132,7 +132,7 @@ img {
 }
 
 #lichSidebar {
-	flex-basis: 32%;
+	flex-basis: calc(25% - 10px);
 	max-width: 340px;
 	background-color: white;
 	padding: 10px 10px 2rem;
@@ -185,8 +185,8 @@ img {
 	height: 38px;
 	line-height: 38px;
 	text-transform: uppercase;
-	-webkit-border-radius: 0px;
-	border-radius: 0px;
+	-webkit-border-radius: 0;
+	border-radius: 0;
 	font-family: "Michroma", "Open Sans", Helvetica, sans-serif;
 	word-spacing: 5px;
 	transform: skewX(-25deg);
@@ -204,8 +204,17 @@ img {
 	}
 }
 
+.messageBar {
+	flex-basis: calc(20% - 10px);
+	max-width: 340px;
+	background-color: white;
+	padding: 10px 10px 2rem;
+	border-top: 1px solid #212121;
+	border-bottom: 3px solid #212121;
+}
+
 .content {
-	flex-basis: 64%;
+	flex-basis: calc(55% - 10px);
 	background-color: white;
 	padding: 10px;
 	border-top: 1px solid #212121;
@@ -307,7 +316,7 @@ img {
   }
 }
 
-.pazon, .requiem, .murmuattempt {
+.pazon, .requiem, .murmurattempt {
   margin-bottom: 3rem;
   border-bottom: 1px solid
   #a0a0a0;
@@ -336,7 +345,7 @@ padding-bottom: 2rem;
 
   .redEdged {
     margin-left: 2rem;
-    margin-top: 0rem;
+    margin-top: 0;
   }
 
   .assets {

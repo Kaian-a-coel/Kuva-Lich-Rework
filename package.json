@@ -4,12 +4,17 @@
   "description": "",
   "main": "Lich_rework.js",
   "scripts": {
-    "sass": "sass --watch ./lich_rework.scss:lich_rework.css"
+    "sass": "sass --watch ./lich_rework.scss:lich_rework.css",
+    "prefix": "postcss lich_rework.css -o lich_rework.css"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "sass": "^1.23.7"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.7.3",
+    "postcss-cli": "^6.1.3"
   }
 }
