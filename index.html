@@ -22,6 +22,7 @@
         <input class="nav-tabs active" type="button" value="Starmap" id="starmapTab" onclick="switchTabs('starMap')">
         <input class="nav-tabs" type="button" value="Requiem" id="requiemTab" onclick="switchTabs('requiem')">
         <input class="nav-tabs" type="button" value="Lich Assets" id="lichAssetsTab" onclick="switchTabs('lichAssets')">
+        <input class="nav-tabs" type="button" value="Plot" id="plotTab" onclick="switchTabs('plot')" hidden>
         <input class="nav-tabs" type="button" value="Intel missions" id="intelMissionsTab" onclick="switchTabs('intelMissions')">
         <input class="nav-tabs" type="button" value="Help / FAQ" id="helpTab" onclick="switchTabs('help')">
         <span id="intelDisplay"> Intel: 0</span>
@@ -94,6 +95,12 @@
                         <td><label for="lichElement">Element</label></td>
                         <td>
                             <span id="lichElement"></span></td>
+                    </tr>
+
+                    <tr>
+                        <td><label for="lichEphemera">Ephemera</label></td>
+                        <td>
+                            <span id="lichEphemera"></span></td>
                     </tr>
                 </table>
                 <!--[DEBUG]Requiem: <input type="text" name="requiem" id="debugRequiem">-->
@@ -227,6 +234,9 @@
                                 onclick="expelMission('Cytherean')" hidden></td>
                         <td>---</td>
                         <td><input type="button" value="Kiliken" onclick="basicMission('Kiliken')"><br>
+                            <input type="button" value="Expel Lich" id="KilikenExpel" onclick="expelMission('Kiliken')"
+                                hidden>
+
                             <input type="button" value="Expel Lich" id="KilikenExpel" onclick="expelMission('Kiliken')"
                                 hidden>
                         </td>
@@ -515,6 +525,14 @@
                         (nothing)
                     </div>
                 </div>
+                <div class="treasury">
+                    <h2>
+                            Bounty:
+                    </h2>
+                    <div id="bountyDisplay">
+                        (nothing)
+                    </div>
+                </div>
                 <div class="assets">
                         <h2>
                                 Assets:
@@ -523,6 +541,22 @@
 
                     </div>
                 </div>
+            </div>
+
+            <div id="plot" hidden>
+
+                <div class="treasury">
+                    <h2 id="plotName">
+                        No ongoing plot.
+                    </h2>
+                    <div id="plotDescription">
+
+                    </div>
+                    <div class="asset" id="plotDisplay" hidden>
+
+                    </div>
+                </div>
+
             </div>
 
             <div id="intelMissions" hidden>
@@ -727,6 +761,12 @@
                     Liches now have an experience bar, and gain experience over time, and when they fight you. A last stand gives
                     more experience than an encounter, and a victorious Lich gains a lot more experience than a defeated one.
                     This results in Liches taking a fair bit more time to get to rank 5 (again, numbers not final, it might feel too long).
+                    <h4>
+                        What about conversion?
+                    </h4>
+                    While converting liches is not implemented in this game, I do not wish to get rid of it. I just didn't see a reason to 
+                    spend a lot of effort implementing a feature that would, considering the format of this game, have very little impact.
+                    Consider that mechanic unchanged from the base game.
                 </div>
                 <div class="mission">
                     <h3>
@@ -756,6 +796,42 @@
                     a cybersecurity specialist that will make hacking more difficult.
                     These assets can be destroyed in a special mission at the cost of Intel. Doing so not only removes the effect, but also rewards you 
                     with loot and special rewards.
+                </div>
+                <h1>
+                    NEW IN UPDATE 1: STAYING DEAD
+                </h1>
+                <div class="mission">
+                    <h3>
+                        Ephemeras are here!
+                    </h3>
+                    They are. And they can only be collected upon a permanent kill, unlike kuva weapons. To offset this, when you temporarily kill a kuva lich (in a Last Stand)
+                    who doesn't have an ephemera, there is a chance they will gain one upon their return.
+                </div>
+                <div class="mission">
+                    <h3>
+                        What's this "bounty" thing about?
+                    </h3>
+                    As it rampages through the Origin System, the Lich is going to anger a lot of people. And many are willing to pay the tenno a good sum to see this particular
+                    annoyance dead. Permanently. The Bounty accumulates as long as the lich is alive, and can only be collected by permanently killing it.
+                    Ideally, the bounty would have a number of variables as to how it accumulates, who contributes what and when for what reason... Here it's very simplified.
+                    The point is to give the players a reason (besides ephemeras) to eventually kill their liches for good, as the change to Kuva Weapons removed all incentive
+                    to permakill a lich (which was sort of intended, but went too far).
+                </div>
+                <div class="mission">
+                    <h3>
+                        Secret plots? Epic assets?
+                    </h3>
+                    A particularly experienced lich can take it upon itself to start ambitious schemes to obtain great power. If left unchecked, your lich might 
+                    deploy a tremendously powerful asset. Epic Assets cannot be destroyed, unlike regular ones, but a lich can only ever have one Epic Asset. To get rid of it, 
+                    you will have to permanently kill the associated lich. As of the moment I am writing this, Epic Assets have no actual effect in the app, but this will change 
+                    next tomorrow morning.
+                </div>
+                <div class="mission">
+                    <h3>
+                        Assets are functional?
+                    </h3>
+                    Some Assets actually impact the gameplay now! The secret bunker network actually increases intel costs, the lone smuggler does steal more loot, and the 
+                    new shield generator prevents Last Stands until destroyed! Epic Assets will also have an impact, once I get some sleep.
                 </div>
             </div>
         </div>
