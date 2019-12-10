@@ -8,12 +8,14 @@
 // ++
 
 // This here is the lich itself. No need to instanciate because you can only have one at a time. And we're not keeping track of dead liches in this program.
+//could use some reshuffling
 var Lich = {
     alive: false,
     name: "Jonn Doh",
     gender: "male",
     weapon: "unarmed",
     element: "none",
+    ephemera: "none",
     bonusDamage: 0,
     lockStrength: 800,
     rank: 1,
@@ -21,7 +23,10 @@ var Lich = {
     anger: 0,
     requiem: ["Fass", "Fass", "Fass"],
     treasury: { credits: 0, common_resources: 0, rare_resources: 0, mods: 0, relics: 0, blueprints: 0 },
+    bounty: { credits: 0, ducats: 0, forma: 0, standing_medallions: 0 },
     assets: [],
+    epicAsset: null, //add legacies later. Only one epic asset per lich.
+    plot: { name: null, progress: 0, status: null, mission: null , timeSinceLastPlot: 0},
     territory_edges: [],
     territory_locked: []
 };
@@ -52,6 +57,19 @@ const lastNames = ["Abekk", "Abrnia", "Aff", "Agekan", "Agg", "Aikr", "Airg", "A
 const genders = ["male", "female"];
 const pronouns = {male:["he", "him", "his"], female:["she", "her", "her"]};
 const solarSystemNodeStatus = {free: "free",occupied: "occupied"};
+
+//syndicates
+const syndicatesList = ["Steel_Meridian", "Arbiters_of_Hexis", "Cephalon_Suda", "The_Perrin_Sequence", "Red_Veil", "New_Loka", "Ostrons", "Solaris_United"]
+const syndicateMessages = {
+    Steel_Meridian: ["This Grineer Lich is going around and oppressing the weak and the innocent. You gotta help them, tenno!"],
+    Arbiters_of_Hexis: ["The Grineer seek to follow the path of the Orokin. Show them their folly."],
+    Cephalon_Suda: ["Fascinating as they are, the Grineer Lich's recursive loop must be interrupted, for the good of the system."],
+    The_Perrin_Sequence: ["Grineer Liches are a worrying development. We ask that you terminate this venture, tenno. With prejudice."],
+    Red_Veil: ["Kuva is corruption made manifest. Liches are an abomination. Cleanse it in fire, tenno."],
+    New_Loka: ["Death is part of life. The Lich's denial of the natural cycle is a detestable impurity onto the System."],
+    Ostrons: ["Swazdo-lah, tenno! Grineer are a plague upon the plains, but this one, this Lich... Ah, it is more painful than an hemorroid, and about the same color, utz. Please rid us of it, tenno."],
+    Solaris_United: ["Sparky! This damnable Lich is raiding around Venus, and the Taxmen have increased their rates to reimburse their losses. Kill the mucker before Nef repo us all, please."],
+}
 
 //SOLAR SYSTEM
 //Solar system. Contains all the nodes, their neighbours, and whether they are free or occupied.
@@ -126,7 +144,7 @@ Object.entries(Planets).forEach(planet => {
 })
 
 //This is necessary for selecting random nodes from scratch (lich spawn) and for eventual foreach(node) on (planet).
-const planetsCatalogue = { Mercury: 0, Venus: 1, Earth: 2 }; //this is jank, CHANGE IT.
+const planetsCatalogue = { Mercury: 0, Venus: 1, Earth: 2 };
 
 const getPlanetNodeNames = planet => Object.keys(planet);
 const SolarSystemCatalogue = [
@@ -136,7 +154,7 @@ const SolarSystemCatalogue = [
 ] ;
 
 //ASSETS
-//model:{tier:0, owned:false, type:"", effects:"", rewards:""}, //intelCost is 100*tier. Subject to balance.
+//model: { tier: 0, type: "", effects: "", rewards: "" }, //intelCost is 100*tier. Subject to balance.
 //possible types: equipment (destroyed by sabotage), personnel (exterminate/sabotage), specialist (capture/assassination).
 //Empyrean/Railjack stuff can be slotted into this system relatively easily. A galleon could be a tier 5 equipment for example.
 var Assets = {
@@ -148,22 +166,123 @@ var Assets = {
 
     Kuva_guardians_bodyguards: { tier: 2, type: "personnel", effects: "Lich spawns accompanied by two Kuva Guardians. Guardians occasionally appear in lich missions.", rewards: "Kesheg blueprint, kuva and kuva associated paraphernalia." },
     Beastmaster: { tier: 2, type: "specialist", effects: "Hyekka and Drakk masters are a lot more common, and their beasts are more dangerous.", rewards: "Companion mods, those hyekka/Drakk imprints that the cetus guy sells..." },
+    Amalgam_armor: { tier: 2, type: "equipment", effects: "Inspired by the Wolf of Saturn 6, the Lich cobbles together an Amalgam armor. This gives them the same damage adaptation as Sentients. However, this is a crude equipment relying on stolen Corpus tech. Destroy the specialised facilities that maintain it, and this armor will fall apart in short order.", rewards:"Sentient/Amalgam related stuff. Low chance of Wolf's operator cosmetic."},
+    Kuva_seals: { tier: 2, type: "equipment", effects: "A sign of favor from the Queens, this braided seals, normally seen on the Keshegs of Kuva Guardians, make the Lich invulnerable to damage unless knocked away by a void demon.", rewards: "Kuva related stuff." },
 
     Cybersecurity_expert: { tier: 3, type: "specialist", effects: "Makes hacking in lich missions more difficult (e.g. more pips). Shortens hacking time. Disable the use of ciphers.", rewards: "Parazon mods, spy rewards, a bunch of ciphers." },
     Manics_cloning_tubes: { tier: 3, type: "personnel", effects: "Manics spawn frequently in Lich missions.", rewards: "Ash alt helmets, dagger blueprints and mods..." },
     Lone_smuggler: { tier: 3, type: "specialist", effects: "More mission rewards stolen. Destroying it is an Archwing mission.", rewards: "Archwing mods and stuff." },
     Disruptor_pulse_backpacks: { tier: 3, type: "equipment", effects: "Some elite thralls may carry disruptor packs, emitting red nullifier pulses.", rewards: "I don't know" },
+    Personal_Crewship : { tier: 3, type:"Empyrean equipment", effects: "The Lich now owns a special Crewship, similar in size to your railjack, and can now invade Empyrean missions. It is much more resilient and powerful than regular grineer railjacks.", rewards: "Blueprints for grineer railjack weapons."},
 
-    Secret_bunkers_network: { tier: 4, type: "equipment", effects: "Intel costs increased by 50% due to the difficulty to track thrall cells.", rewards: "Not having to deal with the increased costs?" },
+    Secret_bunkers_network: { tier: 4, type: "equipment", effects: "Intel costs increased by 40% due to the difficulty to track thrall cells.", rewards: "Not having to deal with the increased costs?" },
     Fast_response_strike_squad: { tier: 4, type: "personnel", effects: "An elite eximus thrall death squad may teleport onto the offending tenno with little warning during lich missions.", rewards: "spectre blueprints" },
     Demented_doctor: { tier: 4, type: "specialist", effects: "Low ranking thralls may turn into heavy infested units when the battle turn against the lich's forces. Possibility of mission-wide hazardous atmosphere.", rewards: "Infested/defection related stuff." },
+    Base_shield_generator: { tier: 4, type: "equipment", effects: "Cannot assault the Lich's last bastion (Last Stand) while this is active.", rewards: "Railjack shields related loot." },
 
     Nightwatch_support: { tier: 5, type: "personnel", effects: "Regular grineer thralls and some Lich mission units replaced by Nightwatch elites.", rewards: "Whatever nightwatch alerts rewarded." },
     Rathuum_executioner: { tier: 5, type: "specialist", effects: "An elite rathuum executioner may appear in lich missions (always the same).", rewards: "Endo, rathuum/Kela mods." },
+    Standard_Galleon : { tier: 5, type: "Empyrean equipment", effects: "A standard grineer galleon. There are thousands like it, but this one is your Lich's. Performs orbital bombardments and throws drop pods in your general direction at the most inopportune moment. Can only be destroyed in a dangerous Railjack boss encounter. While active, Last Stands take place aboard it.", rewards:"Loads of Railjack stuff."},
+}
+
+const EpicAssets = {
+    Fir_Bolg_class_flagship: {
+        Description:"$LICH_NAME has built a Fir Bolg class galleon. Bristling with weaponry and tough armor, this custom galleon is a more serious threat than the mass-produced version. Its spine is too resilient to be fully broken. The only way to be rid of it is to kill its master for good, and even that might not be the last you see of it...", 
+        Effects: "Bigger badder galleon. Tough railjack boss. Will orbital bombard you and drop pod your missions. Last Stands are Railjack missions and you'll need to board the ship to face the Lich.",
+        missions_data: {
+            discovery:{
+                name: "Uncover $LICH_NAME plot.",
+                briefing: "$LICH_NAME is plotting something. Considering the people and resources being moved around, it must be big. You must find out what it is.",
+                objectives: "Find out what is their plan.",
+                success: "$LICH_NAME is building a Fir Bolg class galleon. It is larger, tougher, and bears more weaponry than a regular grineer ship of the line. If completed, it will be a permanent thorn in your side.",
+            },
+            setbacks:[
+                {
+                    name: "No recycling",
+                    briefing: "Older grineer starships are being stripped down for parts to feed the Fir Bolg's construction. Deny $LICH_NAME that source of material. Destroy everything.",
+                    objectives: "Destroy the moored grineer starships. (possibly railjack)",
+                    success: "The old ships are now wrecked so badly nothing can be recovered from them. The Fir Bolg's construction has suffered a severe setback. Good job, tenno.",
+                },
+                {
+                    name: "Worker strike",
+                    briefing: "An undertaking of this scale requires a great number of workers, siphoned off from the ceres and sedna shipyards. Removing them from the equation will leave $LICH_NAME with a pile of resources with no immediate use instead of a warship.",
+                    objectives: "Exterminate the workers.",
+                    success: "With their workforce in shambles, $LICH_NAME's grand project has been greatly delayed.",
+                },
+                {
+                    name: "Grand theft power core",
+                    briefing: "Fir Bolg class galleons use fomorian power cores to sustain their greatly improved shields and weaponry. Those pieces of machinery are hard to come by. Steal away $LICH_NAME's recently acquired core.",
+                    objectives: "Hijack the fomorian power core.",
+                    success: "Great job tenno. A starship without power is as useful as a gun without ammunition.",
+                },
+                {
+                    name: "Steal blueprints",
+                    briefing: "The Fir Bolg's blueprints are set to be communicated between bases soon. Intercept those communications to obtain part of the warship's plans, and force $LICH_NAME's engineers to redo weeks of planning to patch up uncovered weaknesses.",
+                    objectives: "Intercept the communicated plans.",
+                    success: "The plans you have obtained reveal several weak points. The grineer know we have those plans however, so they will no doubt patch them. However, this will cost them greatly.",
+                },
+            ],
+            finale:{
+                name: "Never to be unmoored",
+                briefing: "Setback after setback reduced $LICH_NAME's Fir Bolg would-be flagship to an empty shell, sitting in a deserted shipyard. Bring an end to this overly ambitious project, and remove any chance of the partially built ship being reused.",
+                objectives: "Destroy what's left of the Fir Bolg.",
+                success: "There is nothing left of $LICH_NAME's dreams of an invincible flagship. The planets near their territory can rest a little easier.",
+            }
+        },
+        needed_progress:100
+    },
+    Grave_Hound: {
+        Description:"$LICH_NAME has undergone surgeries and cybernetic augmentation in an attempt to emulate the Wolf of Saturn Six. They have become significantly tougher, stronger, and faster. Though they have suffered negative mental effects.",
+        Effects: "Lich has more HP, and gains 65% damage reduction. They can only use melee kuva weapons. They are able to spawn in any mission anywhere on the starmap, and are perpetually angry.", 
+        missions_data: {
+            discovery:{
+                name: "Uncover $LICH_NAME plot.",
+                briefing: "$LICH_NAME is plotting something. Considering the people and resources being moved around, it must be big. You must find out what it is.",
+                objectives: "Find out what their plan is.",
+                success: "$LICH_NAME has become obsessed with the Wolf of Saturn Six, and intends to transform themselves to resemble him. If they succeed in realising their vision, they would become greatly more powerful in combat.",
+            },
+            setbacks:[
+                {
+                    name: "Turning tables",
+                    briefing: "$LICH_NAME intends to interrogate one of Wolf's subordinates, a Saturn Six fugitive, to gain insight into Wolf himself. Deny them this information by taking away the source.",
+                    objectives: "Rescue the Saturn Six fugitive.",
+                    success: "The prisoner has successfully been relocated. $LICH_NAME will not be able to gain information from this source.",
+                },
+                {
+                    name: "The surgeon",
+                    briefing: "$LICH_NAME has bribed a corpus scientist from the amalgam labs on Jupiter. The scientist may have worked under Alad V on Wolf's modifications. Do not let them escape.",
+                    objectives: "Capture the corpus scientist on Jupiter.",
+                    success: "The corpus scientist has been removed from the equation. This is one less way for $LICH_NAME to obtain what they seek.",
+                },
+                {
+                    name: "Blood curdling",
+                    briefing: "$LICH_NAME took control of a grineer facility on Earth, and is conducting experiments on mixtures of local plants, kubrow and grineer blood, and kuva. Spoil the vats and destroy their research.",
+                    objectives: "Sabotage the brewing reactor.",
+                    success: "The vile mixture has been reduced to useless sludge. Nobody will ever know what effects it would have had.",
+                },
+                {
+                    name: "The child",
+                    briefing: "$LICH_NAME's minions abducted a child from a civilian colony. They believe his body holds secrets that will help their master's plan to transform into a second Wolf. The child is currently held in a cryopod, awaiting vivisection. Do not let this happen.",
+                    objectives: "Defend the child's cryopod until extraction arrives.",
+                    success: "The civilian child has been safely returned to his parents. They are all grateful for your help, tenno.",
+                },
+            ],
+            finale:{
+                name: "Putting it down",
+                briefing: "In a last, desperate attempt to achieve their dream, $LICH_NAME underwent a deeply flawed procedure. They obtained some of the strength they sook, but at the cost of their sanity. They have broken into a Saturn prison, and are killing everything that moves. Put them down before their team studies the phenomenon too deeply.",
+                objectives: "Kill the crazed Lich",
+                success: "The kuva curse will revive $LICH_NAME, but without the unstable transformation. All of their research was thrashed during their rampage, so this is the definite end of that madness.",
+            },
+        },
+        needed_progress:100
+    },
 }
 
 //needed for random selection, since that can't be done as easily on associative arrays.
 const assetsList = [];
+const epicAssetsList = [];
+
+//var legacies = []; //see to that later
 
 Object.entries(Assets).forEach(asset => {
     //populate assetsList dynamically and provide the default value for 'owned' property
@@ -175,6 +294,15 @@ Object.entries(Assets).forEach(asset => {
         assetsList[index] = [];
     }
     assetsList[index].push(assetName);
+});
+
+Object.entries(EpicAssets).forEach(asset => {
+    //populate assetsList dynamically and provide the default value for 'owned' property
+    const assetName = asset[0];
+    const assetData = asset[1];
+    assetData.owned = false;
+
+    epicAssetsList.push(assetName);
 });
 
 // ++
@@ -196,6 +324,7 @@ function createLich() {
     Lich.experience = 0;
     Lich.treasury = { credits: 0, common_resources: 0, rare_resources: 0, mods: 0, relics: 0, blueprints: 0 };
     Lich.assets = [];
+    generateEphemera(); //chance at an ephemera
     //territory must have been cleaned up previously, maybe ensure it's cleaned up again?
     lichLanding(); //Function grabs one random node somewhere and a number of conquer() based on rank. Initial landing.
 
@@ -231,6 +360,15 @@ function generateWeapon(previousWeapon, isReroll) {
     Lich.bonusDamage = newBonusDamage;
     weaponBiometricsBroken = false;
     Lich.lockStrength = 1500; //reset the weapon intel cost
+}
+
+//if lich doesn't already have an ephemera, chance to get one based on element and rank (7-15% at the moment)
+function generateEphemera()
+{
+    if(Lich.ephemera == "none" && getRndInteger(0, 100) < Lich.rank*2 + 5)
+    {
+        Lich.ephemera = ephemeraList[Lich.element];
+    }
 }
 
 //Generate requiem combination. There cannot be duplicates in a combination. Also resets the true/false of requiem status, since correct/incorrectness is no longer valid.
@@ -314,6 +452,148 @@ function lichGetAsset() {
 
 // ++
 //END LICH GENERATION
+// ++
+
+// ++
+//PLOTS AND EPIC ASSETS
+// ++
+
+//called on time passes. This is secret and silent. Lich rank check has been done in time passes
+function startPlot()
+{
+    if(!Lich.epicAsset && !Lich.plot.name && getRndInteger(1,100) < Math.max(0, (Lich.plot.timeSinceLastPlot - 4) ** 2)) //formula means minimum 5 days since last plot ended, maximum 14ish, average 11 days.
+    {
+        Lich.plot.name = epicAssetsList[getRndInteger(0, epicAssetsList.length - 1)];
+        Lich.plot.status = "hidden";
+        console.log("plot started");
+    }
+}
+
+// called on common mission stuff
+function suspectPlot()
+{
+    if(Lich.plot.status == "hidden" && getRndInteger(1, 100) <= Lich.plot.progress/2)
+    {
+        alert("You have uncovered clues that point to a scheme of large proportions being brewed by " + Lich.name + ", you should investigate."); //alert because it's very uncommon and shouldn't be missed.
+        postMessage("You have uncovered clues that point to a scheme of large proportions being brewed by " + Lich.name + ", you should investigate.");
+        Lich.plot.status = "suspected";
+        document.getElementById("plotName").innerHTML = "Unknown Plot"
+        Lich.plot.mission = EpicAssets[Lich.plot.name].missions_data.discovery;
+        updatePlotMission("discover");
+        document.getElementById("plotTab").value = "Plot";
+        document.getElementById("plotTab").hidden = false;
+    }
+}
+
+//called by discovery mission
+function discoverPlot()
+{
+    var missionResults = commonMissionStuff();
+    updateIntelDisplay();
+    missionResults.alertContent += "<br>You gained: " + missionResults.intel + " intel";
+    missionResults.alertContent = "The investigation has turned up a frightening result: " + Lich.plot.mission.success.replace("$LICH_NAME", Lich.name) + "<br>" + missionResults.alertContent;
+    postMessage(missionResults.alertContent);
+    //common mission stuff, mission sidebar message
+
+    Lich.plot.status = "discovered";
+    document.getElementById("plotName").innerHTML = Lich.plot.name;
+    document.getElementById("plotDescription").innerHTML = EpicAssets[Lich.plot.name].missions_data.discovery.success.replace("$LICH_NAME", Lich.name);
+    Lich.plot.mission = EpicAssets[Lich.plot.name].missions_data.setbacks[getRndInteger(0, EpicAssets[Lich.plot.name].missions_data.setbacks.length - 1)]; //random setback mission
+    updatePlotMission("setback");
+}
+
+//called by regular setback missions.
+function setbackPlot()
+{
+    var missionResults = commonMissionStuff();
+    updateIntelDisplay();
+    missionResults.alertContent += "<br>You gained: " + missionResults.intel + " intel";
+    missionResults.alertContent = Lich.plot.mission.success.replace("$LICH_NAME", Lich.name) + "<br>" + missionResults.alertContent;
+    postMessage(missionResults.alertContent);
+    //common mission stuff message mission success (sidebar)
+
+    Lich.plot.progress -= 15; //subject to balance
+    Lich.plot.mission = null; //no mission until the next day (progressPlot sets it anew)
+    document.getElementById("plotDisplay").innerHTML = Lich.name + "'s forces are still reeling from the blow you struck today."
+}
+
+//called by finale mission
+function terminatePlot()
+{
+    var missionResults = commonMissionStuff();
+    updateIntelDisplay();
+    missionResults.alertContent += "<br>You gained: " + missionResults.intel + " intel";
+    missionResults.alertContent = Lich.plot.mission.success.replace("$LICH_NAME", Lich.name) + "<br>" + missionResults.alertContent;
+    postMessage(missionResults.alertContent);
+    //common mission stuff message mission success (sidebar)
+
+    switchTabs('starMap')
+    document.getElementById("plotTab").hidden = true;
+
+    Lich.plot = { name: null, progress: 0, status: null, mission: null, timeSinceLastPlot: 0 };
+}
+
+//called by time passes if there is a plot going on
+function progressPlot()
+{
+    //if plot hasn't been set back that day, progress. setback unsets Lich.plot.mission, so if it's set (and plot isn't hidden) plot hasn't been set back.
+    if(Lich.plot.status == "hidden" || Lich.plot.mission)
+    {
+        Lich.plot.progress += 10; //subject to balance. 25/10 ratio means that doing one mission every three days is positive progress (for tenno). 15 might be better.
+        console.log("progress: " + Lich.plot.progress);
+
+        //if progress is sufficient, resolve plot.
+        if(Lich.plot.progress >= EpicAssets[Lich.plot.name].needed_progress)
+        {
+            successfulPlot();
+        }
+    }
+
+    //new mission whether plot progressed or not.
+    if (Lich.plot.progress >= 25 && Lich.plot.status == "discovered") //25 is how much a setback reduces progress. So this is case where one mission won't reduce progress to zero.
+    {
+        let newMission;
+        do
+        {
+            newMission = EpicAssets[Lich.plot.name].missions_data.setbacks[getRndInteger(0, EpicAssets[Lich.plot.name].missions_data.setbacks.length - 1)]; //random setback mission
+        }
+        while(Lich.plot.mission == newMission) //but no two of the same in a row
+
+        Lich.plot.mission = newMission;
+        updatePlotMission("setback");
+    }
+    else if (Lich.plot.status == "discovered") //if plot has been set back enough that only one mission is necessary: prepare the finale
+    {
+        Lich.plot.mission = EpicAssets[Lich.plot.name].missions_data.finale;
+        updatePlotMission("terminate");
+    }
+}
+
+function successfulPlot()
+{
+    //move asset from in progress to finished, reset plot. (for next lich really)
+    Lich.epicAsset = Lich.plot.name;
+    Lich.plot = { name: null, progress: 0, status: null, mission: null, timeSinceLastPlot: 0 };
+
+    document.getElementById("plotTab").value = "Epic Asset";
+    document.getElementById("plotTab").hidden = false;
+    document.getElementById("plotDescription").innerHTML = EpicAssets[Lich.epicAsset].Description.replace("$LICH_NAME", Lich.name) + "<br>-----<br>" + EpicAssets[Lich.epicAsset].Effects.replace("$LICH_NAME", Lich.name)
+
+    alert(EpicAssets[Lich.epicAsset].Description.replace("$LICH_NAME", Lich.name));
+    postMessage(EpicAssets[Lich.epicAsset].Description.replace("$LICH_NAME", Lich.name));
+    //add sidebar message warning of what happened
+}
+
+//legacies are shelved for later
+/*function archiveLegacy()
+{
+    //when lich permakilled
+    //move built epic asset to legacy
+    //with current lich as first owner
+}*/
+
+// ++
+//END PLOTS
 // ++
 
 // ++
@@ -476,24 +756,70 @@ function dailyTick() {
     {
         lichLevelUp(getRndInteger(6, 30) + Lich.territory_locked.length + Lich.territory_edges.length); //small bit of XP every day. Like very little. Would be more with more planets.
         expand();
+        let assetMessage = false;
 
         if (Math.random() < 0.5) //1/2 chance to get an asset per day. Subject to balance.
         {
             lichGetAsset();
+            assetMessage = true;
         }
 
         if (Lich.rank >= 3) //additional expands for higher ranks, kind of slapdash.
         {
             expand();
         }
-        if (Lich.rank >= 5) {
+        if (Lich.rank >= 4 && !Lich.plot.name)
+        {
+            Lich.plot.timeSinceLastPlot++;
+            startPlot(); //random roll for actually starting the plot in that function
+        }
+        if (Lich.rank >= 5) 
+        {
             expand();
         }
+        if(Lich.plot.name)
+        {
+            progressPlot(); //stuff happens
+        }
+
+        //bounty increase
+        bountyRaise(assetMessage);
 
         //maybe shuffle the XP gain so that actual expansion gains some, and daily upkeep gains some? Expanding liches would level faster in adversity.
     }
     dayCounter++;
     document.getElementById("dayCounter").innerText = "Day: " + dayCounter;
+}
+
+//function increases the bounty reward (collected only upon permakill) and sends messages from angry syndicates "kill him/her already"
+function bountyRaise(dontPost)
+{
+    //numbers are very likely wildly off
+    let creditGain = getRndInteger(1000*Lich.rank, 4000*Lich.rank);
+    let ducatsGain = getRndInteger(1*Lich.rank, 5*Lich.rank);
+    let formaGain = 0;
+    let standingGain = getRndInteger(0, Lich.rank);
+
+    if(getRndInteger(1, 100) <= Lich.rank*3)
+    {
+        formaGain = 1;
+    }
+
+    let angrySyndicate = syndicatesList[getRndInteger(0, syndicatesList.length-1)]
+
+    let angryMessage = "Message from: " + angrySyndicate + ".<br>" + syndicateMessages[angrySyndicate][getRndInteger(0, syndicateMessages[angrySyndicate].length-1)] + "<br>The bounty on " + Lich.name + "'s head has increased.";
+
+    if(!dontPost)
+    {
+        postMessage(angryMessage);
+    }
+
+    Lich.bounty.credits += creditGain;
+    Lich.bounty.ducats += ducatsGain;
+    Lich.bounty.forma += formaGain;
+    Lich.bounty.standing_medallions += standingGain;
+
+    updateBountyDisplay();
 }
 
 // ++
@@ -526,6 +852,13 @@ function expelMission(node) {
     }
     else {
         var intelCost = 20;
+
+        //secret bunkers cost hike
+        if(Assets["Secret_bunkers_network"].owned)
+        {
+            intelCost = Math.floor(intelCost * 1.4);
+        }
+
         if (intel < intelCost) {
             postMessage("Not enough intel to root out lich activity. Need: " + intelCost + " intel.<br>Acquire basic Intel through regular missions.")
         }
@@ -564,6 +897,13 @@ function purgePlanet(purgedPlanet) {
 
     if (!isLastPlanet && nodesOnPlanet) {
         var intelCost = Math.floor(20 * (nodesOnPlanet ** 1.5)); //cost scales up with number of occupied nodes
+
+        //secret bunkers cost hike
+        if(Assets["Secret_bunkers_network"].owned)
+        {
+            intelCost = Math.floor(intelCost * 1.4);
+        }
+
         if (intel < intelCost) {
             postMessage("Not enough intel to find a critical HQ on " + purgedPlanet + ". You need " + intelCost + " to purge that many nodes at once.");
         }
@@ -577,7 +917,7 @@ function purgePlanet(purgedPlanet) {
             });
 
             updateIntelDisplay();
-            missionResults.alertContent += "<br>Your net intel change is: " + (missionResults.intel + intelGain - intelCost) + " intel<br>";
+            missionResults.alertContent += "<br>Your net intel change is: " + (missionResults.intel - intelCost) + " intel<br>";
 
             missionResults.alertContent += purgedPlanet + " has been purged of all Lich presence. Nodes freed: " + nodesOnPlanet + "<br>";
 
@@ -596,6 +936,12 @@ function purgePlanet(purgedPlanet) {
 //this is the mission that gets a lot of intel at once.
 function reconMission() {
     var intelCost = 35
+
+    //secret bunkers cost hike
+    if(Assets["Secret_bunkers_network"].owned)
+    {
+        intelCost = Math.floor(intelCost * 1.4);
+    }
     if (intel < intelCost) {
         postMessage("Not enough intel to find an appropriate target. Need: " + intelCost + " intel.")
     }
@@ -616,6 +962,12 @@ function reconMission() {
 
 function recoverLoot() {
     var intelCost = 50
+
+    //secret bunkers cost hike
+    if(Assets["Secret_bunkers_network"].owned)
+    {
+        intelCost = Math.floor(intelCost * 1.4);
+    }
     if (intel < intelCost) {
         postMessage("Not enough intel to find a treasury cache. Need: " + intelCost + " intel.")
     }
@@ -665,6 +1017,13 @@ function recoverLoot() {
 
 function trackDownLich() {
     var intelCost = 70;
+
+    //secret bunkers cost hike
+    if(Assets["Secret_bunkers_network"].owned)
+    {
+        intelCost = Math.floor(intelCost * 1.4);
+    }
+
     if (intel < intelCost) {
         postMessage("Not enough intel to track down " + Lich.name + ". Need: " + intelCost + " intel.")
     }
@@ -710,12 +1069,20 @@ function destroyAsset(asset) //where asset is a string name
 {
     if (Assets[asset].owned) {
         var intelCost = Assets[asset].tier * 100; //subject to balance
+
+        //secret bunkers cost hike
+        if(Assets["Secret_bunkers_network"].owned)
+        {
+            intelCost = Math.floor(intelCost * 1.4);
+        }
+
         if (intel < intelCost) {
             postMessage("Not enough intel to locate " + Lich.name + "'s " + asset + ". Need " + intelCost + " intel to destroy a tier " + Assets[asset].tier + " asset.")
         }
         else {
             intel -= intelCost;
             var missionResults = commonMissionStuff();
+            updateIntelDisplay();
 
             Assets[asset].owned = false;
             
@@ -744,143 +1111,194 @@ function destroyAsset(asset) //where asset is a string name
 //this mission doesn't have a permanent button, it is generated when the program detects that the lich only has one node left
 //after a liberate(). And it's removed on successful conquer().
 function lastStand() {
-    var lastStandResults = "Fought " + Lich.name + " in a climactic battle on " + Lich.territory_edges[0] + ", " + SolarSystem[Lich.territory_edges[0]].planet + ".<br>";
 
-    if (Math.random() >= 0.1) {
-        lastStandResults += "And were victorious!<br>"
-        var finalVictory = false;
+    if(Assets["Base_shield_generator"].owned)
+    {
+        postMessage("Cannot assault " + Lich.name + "'s last bastion, as it is protected by a powerful shield generator. You will have to destroy it first.");
+    }
+    else
+    {
+        var lastStandResults = "Fought " + Lich.name + " in a climactic battle on " + Lich.territory_edges[0] + ", " + SolarSystem[Lich.territory_edges[0]].planet + ".<br>";
 
-        //victory
-        //check combination, with order this time.
-        if (Parazon.requiemEquipped[0] == Lich.requiem[0]) {
-            //good first requiem
-            lastStandResults += Parazon.requiemEquipped[0] + " was the correct first requiem!<br>"
+        if (Math.random() >= 0.1) {
+            lastStandResults += "And were victorious!<br>"
+            var finalVictory = false;
 
-            if (Parazon.requiemEquipped[1] == Lich.requiem[1]) {
-                //good second requiem
-                lastStandResults += "and " + Parazon.requiemEquipped[1] + " was the correct second requiem!<br>"
+            //victory
+            //check combination, with order this time.
+            if (Parazon.requiemEquipped[0] == Lich.requiem[0]) {
+                //good first requiem
+                lastStandResults += Parazon.requiemEquipped[0] + " was the correct first requiem!<br>"
 
-                if (Parazon.requiemEquipped[2] == Lich.requiem[2]) {
-                    //good third requiem
-                    lastStandResults += "and " + Parazon.requiemEquipped[2] + " was the correct last requiem!<br>"
-                    //correct combination
-                    finalVictory = true;
-                }
-                else {
-                    //incorrect third requiem
-                    if (Parazon.requiemEquipped[2] == NO_EQUIPPED_REQUIEM) {
-                        lastStandResults += "but you did not have a third requiem mod equipped...<br>"
+                if (Parazon.requiemEquipped[1] == Lich.requiem[1]) {
+                    //good second requiem
+                    lastStandResults += "and " + Parazon.requiemEquipped[1] + " was the correct second requiem!<br>"
+
+                    if (Parazon.requiemEquipped[2] == Lich.requiem[2]) {
+                        //good third requiem
+                        lastStandResults += "and " + Parazon.requiemEquipped[2] + " was the correct last requiem!<br>"
+                        //correct combination
+                        finalVictory = true;
                     }
                     else {
-                        lastStandResults += "but " + Parazon.requiemEquipped[2] + " was not the correct last requiem...<br>"
-                        Parazon.lastStandKnown = 2;
+                        //incorrect third requiem
+                        if (Parazon.requiemEquipped[2] == NO_EQUIPPED_REQUIEM) {
+                            lastStandResults += "but you did not have a third requiem mod equipped...<br>"
+                        }
+                        else {
+                            lastStandResults += "but " + Parazon.requiemEquipped[2] + " was not the correct last requiem...<br>"
+                            Parazon.lastStandKnown = 2;
+                        }
                     }
-                }
-            }
-            else {
-                //incorrect second requiem
-                if (Parazon.requiemEquipped[1] == NO_EQUIPPED_REQUIEM) {
-                    lastStandResults += "but you did not have a second requiem mod equipped...<br>"
                 }
                 else {
-                    lastStandResults += "but " + Parazon.requiemEquipped[1] + " was not the correct second requiem...<br>"
-                    if (Parazon.lastStandKnown < 1) {
-                        Parazon.lastStandKnown = 1;
+                    //incorrect second requiem
+                    if (Parazon.requiemEquipped[1] == NO_EQUIPPED_REQUIEM) {
+                        lastStandResults += "but you did not have a second requiem mod equipped...<br>"
+                    }
+                    else {
+                        lastStandResults += "but " + Parazon.requiemEquipped[1] + " was not the correct second requiem...<br>"
+                        if (Parazon.lastStandKnown < 1) {
+                            Parazon.lastStandKnown = 1;
+                        }
                     }
                 }
             }
-        }
-        else {
-            //incorrect first requiem
-            if (Parazon.requiemEquipped[0] == NO_EQUIPPED_REQUIEM) {
-                lastStandResults += "but you did not have a first requiem mod equipped...<br>"
-            }
             else {
-                lastStandResults += "but " + Parazon.requiemEquipped[0] + " was not the correct first requiem...<br>"
+                //incorrect first requiem
+                if (Parazon.requiemEquipped[0] == NO_EQUIPPED_REQUIEM) {
+                    lastStandResults += "but you did not have a first requiem mod equipped...<br>"
+                }
+                else {
+                    lastStandResults += "but " + Parazon.requiemEquipped[0] + " was not the correct first requiem...<br>"
+                }
             }
-        }
 
-        if (finalVictory) {
-            lastStandResults += "You finally defeated " + Lich.name + " for good! The system is now free from this particular threat.<br>"
-            document.getElementById("lichCreate").hidden = false;
-            document.getElementById("lichInfo").hidden = true;
-            Lich.assets.forEach(asset => {
-                Assets[asset].owned = false;
-                document.getElementById(asset).hidden = true;
-            });
-            Lich.assets = [];
-            intel = 0;
-            updateIntelDisplay();
-            Lich.alive = false;
+            //LICH PERMAKILL HERE
+            if (finalVictory) {
+                lastStandResults += "You finally defeated " + Lich.name + " for good! The system is now free from this particular threat.<br>"
+                
+                //get the bounty and reset it.
+                lastStandResults += "The grateful inhabitants of the system deliver to you the bounty promised for " + Lich.name + "'s head:<br>"
+                    + Lich.bounty.credits + " credits<br>"
+                    + Lich.bounty.ducats + " ducats<br>"
+                    + Lich.bounty.forma + " forma<br>"
+                    + Lich.bounty.standing_medallions + " standing medallions.<br>";
+
+                Lich.bounty.credits = 0;
+                Lich.bounty.ducats = 0;
+                Lich.bounty.forma = 0;
+                Lich.bounty.standing_medallions = 0;
+
+                document.getElementById("bountyDisplay").innerHTML = "(nothing)";
+
+                //grab the ephemera if there is one
+                if(Lich.ephemera != "none")
+                {
+                    lastStandResults += "Acquired: " + Lich.ephemera + " ephemera.<br>";
+                }
+
+                //replace info tab with create lich button
+                document.getElementById("lichCreate").hidden = false;
+                document.getElementById("lichInfo").hidden = true;
+
+                //un-own all assets
+                Lich.assets.forEach(asset => {
+                    Assets[asset].owned = false;
+                    document.getElementById(asset).hidden = true;
+                });
+                Lich.assets = [];
+
+                //delete obsolete into
+                intel = 0;
+                updateIntelDisplay();
+
+                //reset requiem
+                requiemModsList.forEach(requiemMod => {
+                    Parazon.requiemModsStatus[requiemMod] = "?";
+                });
+                updateKnownRequiems();
+                Parazon.requiemHistory = [];
+                while(document.getElementById("murmurAttemptsHistory").hasChildNodes())
+                {
+                    document.getElementById("murmurAttemptsHistory").firstChild.remove();
+                }
+
+                //actually kill the lich
+                Lich.alive = false;
+            }
+            //victory but not permanent
+            else {
+                lastStandResults += "Though " + Lich.name + " lies dead, the parazon failed to undo the kuva's curse of immortality. They will be back...<br>"
+                
+                //shows the known requiems when order is taken into account
+                if (Parazon.lastStandKnown >= 0) {
+                    var lastStandHistoric = "Known requiem mod order: "
+                    for (let i = 0; i < Parazon.lastStandKnown; i++) {
+                        lastStandHistoric += Lich.requiem[i] + " ";
+                    }
+                    lastStandHistoric += "<br>";
+                    document.getElementById("lastStandAttemptsHistory").innerHTML = lastStandHistoric;
+                }
+
+            }
+
+            liberate(Lich.territory_edges[0]); //this should be the only liberate() to do. If not, there is a problem.
+            document.getElementById("lastStand").hidden = true;
+
+            //this is weaksauce but whatever
+            if (Lich.territory_edges.length || Lich.territory_locked.length) {
+                console.log("ERROR: PREMATURE LAST STAND");
+            }
+
+            //weapon acquisition, whether final victory or not.
+            lastStandResults += "Acquired: +" + Lich.bonusDamage + "% " + Lich.element + " Kuva " + Lich.weapon + ".<br>";
+            if (!finalVictory) {
+                generateWeapon(Lich.weapon, true);
+            }
+
+            lastStandResults += "Recovered the entirety of " + Lich.name + "'s treasury:<br>"
+                + Lich.treasury.credits + " credits<br>"
+                + Lich.treasury.common_resources + " common resources<br>"
+                + Lich.treasury.rare_resources + " rare resources<br>"
+                + Lich.treasury.mods + " mods<br>"
+                + Lich.treasury.relics + " relics<br>"
+                + Lich.treasury.blueprints + " blueprint<br>";
+
+            //removing the recovered loot from the lich's treasury
+            Lich.treasury.credits = 0;
+            Lich.treasury.common_resources = 0;
+            Lich.treasury.rare_resources = 0;
+            Lich.treasury.mods = 0;
+            Lich.treasury.relics = 0;
+            Lich.treasury.blueprints = 0;
+
+            document.getElementById("treasuryDisplay").innerHTML = "(nothing)";
+
+            updateLichInfo();
+            postMessage(lastStandResults);
         }
         else {
-            lastStandResults += "Though " + Lich.name + " lies dead, the parazon failed to undo the kuva's curse of immortality. They will be back...<br>"
-            if (Parazon.lastStandKnown >= 0) {
-                var lastStandHistoric = "Known requiem mod order: "
-                for (let i = 0; i < Parazon.lastStandKnown; i++) {
-                    lastStandHistoric += Lich.requiem[i] + " ";
-                }
-                lastStandHistoric += "<br>";
-                document.getElementById("lastStandAttemptsHistory").innerHTML = lastStandHistoric;
+            //defeat
+            lastStandResults += "And were defeated... (1/10 chance)<br>" + Lich.name + " rallied grineer to " + pronouns[Lich.gender][2] + " banner thanks to " + pronouns[Lich.gender][2] + " unlikely comeback, and regained territory on " + SolarSystem[Lich.territory_edges[0]].planet + ".<br>";
+            //expand() a few times, lich gains a ton of XP.
+
+            //acquire a trophy
+            if(!Assets["Warframe_helmet_trophy"].owned)
+            {
+            Assets["Warframe_helmet_trophy"].owned = true;
+            Lich.assets.push("Warframe_helmet_trophy");
+            document.getElementById("assetTier" + Assets["Warframe_helmet_trophy"].tier).hidden = false;
+            document.getElementById("Warframe_helmet_trophy").hidden = false;
+            lastStandResults += pronouns[Lich.gender][0] + " also tore the helmet from your destroyed frame, and wears it as a trophy!<br>"
             }
 
+            for (let i = 0; i <= Lich.rank; i++) {
+                expand();
+            }
+            postMessage(lastStandResults);
+            lichLevelUp(240, 360);
         }
-
-        liberate(Lich.territory_edges[0]); //this should be the only liberate() to do. If not, there is a problem.
-        document.getElementById("lastStand").hidden = true;
-
-        //this is weaksauce but whatever
-        if (Lich.territory_edges.length || Lich.territory_locked.length) {
-            console.log("ERROR: PREMATURE LAST STAND");
-        }
-
-        //weapon acquisition, whether final victory or not.
-        lastStandResults += "Acquired: +" + Lich.bonusDamage + "% " + Lich.element + " Kuva " + Lich.weapon + ".<br>";
-        if (!finalVictory) {
-            generateWeapon(Lich.weapon, true);
-        }
-
-        lastStandResults += "Recovered the entirety of " + Lich.name + "'s treasury:<br>"
-            + Lich.treasury.credits + " credits<br>"
-            + Lich.treasury.common_resources + " common resources<br>"
-        + Lich.treasury.rare_resources + " rare resources<br>"
-        + Lich.treasury.mods + " mods<br>"
-        + Lich.treasury.relics + " relics<br>"
-        + Lich.treasury.blueprints + " blueprint<br>";
-
-        //removing the recovered loot from the lich's treasury
-        Lich.treasury.credits = 0;
-        Lich.treasury.common_resources = 0;
-        Lich.treasury.rare_resources = 0;
-        Lich.treasury.mods = 0;
-        Lich.treasury.relics = 0;
-        Lich.treasury.blueprints = 0;
-
-        document.getElementById("treasuryDisplay").innerHTML = "(nothing)";
-
-        updateLichInfo();
-        postMessage(lastStandResults);
-    }
-    else {
-        //defeat
-        lastStandResults += "And were defeated... (1/10 chance)<br>" + Lich.name + " rallied grineer to " + pronouns[Lich.gender][2] + " banner thanks to " + pronouns[Lich.gender][2] + " unlikely comeback, and regained territory on " + SolarSystem[Lich.territory_edges[0]].planet + ".<br>";
-        //expand() a few times, lich gains a ton of XP.
-
-        //acquire a trophy
-        if(!Assets["Warframe_helmet_trophy"].owned)
-        {
-        Assets["Warframe_helmet_trophy"].owned = true;
-        Lich.assets.push("Warframe_helmet_trophy");
-        document.getElementById("assetTier" + Assets["Warframe_helmet_trophy"].tier).hidden = false;
-        document.getElementById("Warframe_helmet_trophy").hidden = false;
-        lastStandResults += pronouns[Lich.gender][0] + " also tore the helmet from your destroyed frame, and wears it as a trophy!<br>"
-        }
-
-        for (let i = 0; i <= Lich.rank; i++) {
-            expand();
-        }
-        postMessage(lastStandResults);
-        lichLevelUp(240, 360);
     }
 }
 
@@ -923,6 +1341,8 @@ function commonMissionStuff() {
 
     updateLichInfo();
 
+    suspectPlot();
+
     return missionResults
 }
 
@@ -937,15 +1357,32 @@ function lichPlunder() {
         blueprints: 0,
     }
 
-    if (Math.random() < 0.5) {
+    var modsStealChance = 0.5;
+    var relicsStealChance = 0.25;
+    var blueprintsStealChance = 0.05;
+
+    //lone smuggler increases stolen loot.
+    if(Assets["Lone_smuggler"].owned)
+    {
+        plunder.credits = Math.floor(plunder.credits * 1.5);
+        plunder.common_resources = Math.floor(plunder.common_resources * 1.5);
+        plunder.rare_resources = Math.floor(plunder.rare_resources * 1.5);
+        modStealChance *= 1.5;
+        relicsStealChance *= 1.5;
+        blueprintsStealChance *= 1.5;
+    }
+
+    if (Math.random() < modsStealChance) {
         plunder.mods = getRndInteger(1, 3);
     }
-    if (Math.random() < 0.25) {
+    if (Math.random() < relicsStealChance) {
         plunder.relics = 1;
     }
-    if (Math.random() < 0.05) {
+    if (Math.random() < blueprintsStealChance) {
         plunder.blueprints = 1;
     }
+
+    
 
     //adding the generated loot to the lich's treasury
     Lich.treasury.credits += plunder.credits;
@@ -967,7 +1404,7 @@ function lichEncounter() {
         var encounterResults = "";
 
         //either way: reduce cost of steal weapon. Minimum of 10% of max cost as of writing this
-        Lich.lockStrength = Math.max(Math.floor(0.9 * Lich.lockStrength), 150);
+        Lich.lockStrength = Math.max(Lich.lockStrength-150, 150);
 
         //win/lose, random chance
         if (Math.random() < 0.9) //90% chance to win
@@ -1148,6 +1585,8 @@ function murmurs() //this is where the computer play Mastermind (for regular enc
 //The big messaging function to replace the alert() popups
 function postMessage(message)
 {
+    message = message.replace("$LICH_NAME", Lich.name); //not necessary in that function right now, but keep on hand.
+
     messageBoard = document.getElementById("messages");
 
     var newOption = document.createElement("div");
@@ -1194,9 +1633,16 @@ function updateTreasuryDisplay() {
         "Blueprints: " + Lich.treasury.blueprints;
 }
 
+function updateBountyDisplay() {
+    document.getElementById("bountyDisplay").innerHTML =
+        "Credits: " + Lich.bounty.credits + "<br>" +
+        "Ducats: " + Lich.bounty.ducats + "<br>" +
+        "Forma: " + Lich.bounty.forma + "<br>" +
+        "Standing medallions: " + Lich.bounty.standing_medallions + "<br>";
+}
+
 function updateIntelDisplay() {
     document.getElementById("intelDisplay").innerText = "Intel: " + intel;
-    console.log('Test')
 }
 
 function updateKnownRequiems() {
@@ -1241,6 +1687,9 @@ function updateKnownRequiems() {
     if (unknownReq.length) {
         document.getElementById("modsUnknownDisplay").innerHTML = "The following mods' status is unknown: " + unknownReq.join(", ");
     }
+    else{
+        document.getElementById("modsUnknownDisplay").innerHTML = "";
+    }
     if (incorrectReq.length) {
         document.getElementById("modsIncorrectDisplay").innerHTML = "The following mods are incorrect (not in lich requiem): " + incorrectReq.join(", ");
     }
@@ -1248,6 +1697,29 @@ function updateKnownRequiems() {
         document.getElementById("modsCorrectDisplay").innerHTML = "The following mods are correct (in the lich requiem): " + correctReq.join(", ");
     }
 
+}
+
+function updatePlotMission(callback)
+{
+    var plotDisplay = document.getElementById("plotDisplay");
+    plotDisplay.hidden = false; //just in case
+
+    let htmlHeadline = `<h4>${Lich.plot.mission.name.replace("$LICH_NAME", Lich.name)}</h4>`;
+    let htmlButton = `<button class="redEdged" value="${callback} Plot" onclick="${callback}Plot()">${callback} Plot</button>`;
+    let htmlTable = `
+                <table>
+                    <tr>
+                        <td>Briefing:</td>
+                        <td>${Lich.plot.mission.briefing.replace("$LICH_NAME", Lich.name)}</td>
+                    </tr>
+                    <tr>
+                        <td>Objective:</td>
+                        <td>${Lich.plot.mission.objectives.replace("$LICH_NAME", Lich.name)}</td>
+                    </tr>
+                </table>
+            `;
+
+    plotDisplay.innerHTML = htmlHeadline + htmlButton + htmlTable;
 }
 
 function populateParazonDropdowns(node) {
@@ -1280,7 +1752,7 @@ function populateAssetsDisplay() {
             newAssetEntry.classList.add("asset");
             newAssetEntry.hidden = true;
             let htmlButton = `<button class="redEdged" value="Destroy" onclick="destroyAsset('${asset}')">Destroy</button>`;
-            let htmlHeadline = `<h4>${asset}</h4>`
+            let htmlHeadline = `<h4>${asset}</h4>`;
             let htmlTable = `
                 <table>
                     <tr>
@@ -1296,8 +1768,8 @@ function populateAssetsDisplay() {
                         <td>${Assets[asset].rewards}</td>
                     </tr>
                 </table>
-            `
-            newAssetEntry.innerHTML = htmlHeadline + htmlButton + htmlTable
+            `;
+            newAssetEntry.innerHTML = htmlHeadline + htmlButton + htmlTable;
             newAssetTierHeader.appendChild(newAssetEntry);
         });
 
@@ -1314,6 +1786,8 @@ window.onload = function () {
 
     document.getElementById("intelDisplay").value = 0;
     document.getElementById("dayCounter").value = 0;
+
+    alert("This game has been updated! Check the help/FAQ tab for patch notes (all the way at the bottom). \nAlso, this might be a little buggy right now, the update got pushed only yesterday. \nContact me on reddit or discord for feedback and bug reports.")
 }
 
 function switchTabs(tab) {
@@ -1322,12 +1796,14 @@ function switchTabs(tab) {
     var lichAssetsTab = document.getElementById("lichAssets");
     var intelMissionsTab = document.getElementById("intelMissions");
     var helpTab = document.getElementById("help");
+    var plotTab = document.getElementById("plot");
 
     starmapTab.hidden = true;
     requiemTab.hidden = true;
     lichAssetsTab.hidden = true;
     intelMissionsTab.hidden = true;
     helpTab.hidden = true;
+    plotTab.hidden = true;
 
     document.getElementById(tab).hidden = false;
 }
