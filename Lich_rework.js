@@ -482,6 +482,7 @@ function suspectPlot()
         updatePlotMission("discover");
         document.getElementById("plotTab").value = "Plot";
         document.getElementById("plotTab").hidden = false;
+        document.getElementById("plotDisplay").hidden = false;
     }
 }
 
@@ -577,6 +578,7 @@ function successfulPlot()
 
     document.getElementById("plotTab").value = "Epic Asset";
     document.getElementById("plotTab").hidden = false;
+    document.getElementById("plotDisplay").hidden = true;
     document.getElementById("plotDescription").innerHTML = EpicAssets[Lich.epicAsset].Description.replace("$LICH_NAME", Lich.name) + "<br>-----<br>" + EpicAssets[Lich.epicAsset].Effects.replace("$LICH_NAME", Lich.name)
 
     alert(EpicAssets[Lich.epicAsset].Description.replace("$LICH_NAME", Lich.name));
