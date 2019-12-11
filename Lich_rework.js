@@ -1394,7 +1394,7 @@ function lichPlunder() {
         plunder.credits = Math.floor(plunder.credits * 1.5);
         plunder.common_resources = Math.floor(plunder.common_resources * 1.5);
         plunder.rare_resources = Math.floor(plunder.rare_resources * 1.5);
-        modStealChance *= 1.5;
+        modsStealChance *= 1.5;
         relicsStealChance *= 1.5;
         blueprintsStealChance *= 1.5;
     }
