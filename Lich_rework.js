@@ -53,8 +53,8 @@ const requiemModsList = ["Fass", "Jahu", "Khra", "Lohk", "Netra", "Ris", "Vome",
 const elementsList = ["Impact", "Heat", "Cold", "Electricity", "Toxin", "Magnetic", "Radiation"];
 const ephemeraList = {Impact: "Vengeful Shockwave", Heat: "Vengeful Flame", Cold: "Vengeful Chill", Electricity: "Vengeful Charge", Toxin: "Vengeful Toxin", Magnetic: "Vengeful Pull", Radiation:"Vengeful Trickster"};
 //thanks to u/Anal_L1beration on reddit for compiling a list of lich names
-const firstNames = ["Abahela", "Abuhbik", "Adihk", "Aditt", "Aff", "Afteve", "Agigrbav", "Agizr", "Agopp", "Ahbah", "Ahili", "Ahkt", "Aiksitt", "Amukir", "Andigi", "Anurel", "Aoditekk", "App", "Arahidd", "Arolov", "Asedd", "Astemm", "Auhbiktu", "Aurr", "Autonut", "Avirb", "Avukk", "Axugg", "Azorgg", "Barr", "Bedd", "Bess", "Bhigg", "Bhkinmogg", "Bidd", "Bopp", "Bukk", "Burvuhil", "Buvudd", "Cakk", "Cebb", "Chkk", "Ciksopo", "Cilba", "Cirech", "Cixx", "Cogrg", "Colh", "Colivo", "Colnd", "Colokk", "Colonoo", "Comorgo", "Conakk", "Conana", "Condig", "Condipp", "Conn", "Conpo", "Copurr", "Corduv", "Corgmor", "Corr", "Cortekk", "Cubb", "Cugal", "Cugrobev", "Cunvon", "Cuvidd", "Cuzokk", "Dahkk", "Dand", "Dore", "Drgg", "Febitt", "Femm", "Fepipp", "Fetzk", "Gigg", "Gilil", "Gogrog", "Habilop", "Hokk", "Hoktahokk", "Jebud", "Jeghh", "Jiff", "Jigugg", "Jolokk", "Jon'k", "Jubb", "Juliff", "Jurgg", "Jurghuzz", "Jusogg", "Juzz", "Kalilh", "Kedi", "Kibudekk", "Kilordi", "Kirdi", "Kirr", "Kixahin", "Koli", "Kundibb", "Lagiks", "Lekk", "Leliki", "Less", "Lidd", "Ligg", "Liliff", "Lithelonn", "Lizr", "Logg", "Loss", "Ludd", "Lukk", "Lurr", "Madd", "Magudd", "Migg", "Migrghb", "Mirdiln", "Mirili", "Miskigg", "Mizrbiku", "Molik", "Munuki", "Murdagg", "Naburirb", "Nakk", "Nandi", "Nili", "Nogo", "Nohba", "Nohid", "Obb", "Obuk", "Odordukk", "Ogemagg", "Ogg", "Ongrushk", "Onuvuk", "Orgadd", "Ory", "Ovixali", "Ovizo", "Pavodd", "Purvrp", "Putrebb", "Ranukk", "Roo", "Rorbukk", "Rorenv", "Rukk", "Rukuvr", "Sadajj", "Sardi", "Sikibu", "Sikud", "Songu", "Sonn", "Sovopp", "Sury", "Tee", "Tigg", "Tilokk", "Torr", "Tortaho", "Tosunn", "Turr", "Ukk", "Uvutt", "Vargg", "Varr", "Vegidd", "Vemm", "Vodd", "Wiksh", "Wirihi", "Xidd", "Xigba", "Xigit", "Ximukk", "Yajj", "Yigg", "Yitt", "Yolilik", "Yugg", "Yuxx", "Zegubb", "Zikekk", "Zoo", "Zopiketu", "Zuu", "Zy"];
-const lastNames = ["Abekk", "Abrnia", "Aff", "Agekan", "Agg", "Aikr", "Airg", "Aizogg", "Ajiror", "Ak'duhovo", "Akan", "Akiben", "Akipu", "Amokk", "App", "Arikk", "Arott", "Aruvt", "Ashg", "Asuduko", "Asugg", "Asuhibi", "Asul", "Asutikk", "Axulo", "Bekakk", "Bidd", "Bikk", "Bivtiss", "Crbenn", "Crbiss", "Crgdbrb", "Crirr", "Cromm", "Crosygg", "Cruhod", "Crur", "Dediga", "Delo", "Diss", "Divi", "Dora'fibb", "Dorzoff", "Duu", "Edudz", "Egg", "Ek'agg", "Ek'k", "Ekarboif", "Enukk", "Faba", "Fahobur", "Fanenirr", "Fangg", "Fann", "Fegaboabb", "Fegi", "Feglibo", "Fenurr", "Fetomm", "Fikk", "Firr", "Fishobe", "Fiss", "Fitt", "Fudu", "Furgang", "Fuzbam", "Gaa", "Gabb", "Gagelp", "Gahkk", "Gahl", "Gakk", "Ganabrzz", "Ganikk", "Gapp", "Grgik", "Grpesu", "Ha'he", "Hak", "Haka", "Harb", "Haree", "Hatanar", "Hekk", "Heloo", "Herah", "Hevo", "Hiji", "Hikrzz", "Hitt", "Imm", "Imuho", "Jann", "Jed", "Jelipta", "Jobevta", "Jokh", "Jorr", "Kaa", "Kakann", "Karkakan", "Khdifngrg", "Kodz'fu", "Koff", "Kombavv", "Kranedij", "Ledd", "Likk", "Lilo", "Lipp", "Loree", "Lorr", "Lorz'hl", "Lorzz", "Lushokh", "Mabed'di", "Magodd", "Mane", "Mekk", "Melikoff", "Menn", "Meviss", "Migg", "Miji", "Mobil", "Mobonik", "Morgiss", "Mosygg", "Movupt", "Norr", "Nott", "Obb", "Ogekev", "Ogg", "Ogudilv", "Omoib", "Rapp", "Rekk", "Roo", "Rul'f", "Sangebo", "Sann", "Sipp", "Siss", "Soig", "Sokk", "Sorr", "Sostukk", "Sozonge", "Stakk", "Stanika", "Stath", "Sthorr", "Stij", "Straho", "Strn", "Stsuhli", "Tabb", "Tagr", "Tamobeko", "Tapp", "Tebikk", "Tett", "Tiduhdu", "Tijorvokk", "Tili", "Tuloo", "Turidi", "Tygg", "Udabel", "Udd", "Udiaba", "Udigg", "Udrbra", "Ududiss", "Udzbo", "Ul'fngg", "Uligg", "Vach", "Vakk", "Varorngg", "Vataba", "Vavenn", "Vobakk", "Vorr", "Votanul", "Yosykk", "Zachg", "Zevil"];
+const firstNames = ["Abahela", "Abuhbik", "Adihk", "Aditt", "Aff", "Afteve", "Agigrbav", "Agizr", "Agopp", "Ahbah", "Ahili", "Ahkt", "Aiksitt", "Amukir", "Andigi", "Anurel", "Aoditekk", "App", "Arahidd", "Arolov", "Asedd", "Astemm", "Auhbiktu", "Aurr", "Autonut", "Avirb", "Avukk", "Axugg", "Azorgg", "Barr", "Bedd", "Bess", "Bhigg", "Bhkinmogg", "Bidd", "Bopp", "Bukk", "Burvuhil", "Buvudd", "Cakk", "Cebb", "Chkk", "Ciksopo", "Cilba", "Cirech", "Cixx", "Cogrg", "Colh", "Colivo", "Colnd", "Colokk", "Colonoo", "Comorgo", "Conakk", "Conana", "Condig", "Condipp", "Conn", "Conpo", "Copurr", "Corduv", "Corgmor", "Corr", "Cortekk", "Cubb", "Cugal", "Cugrobev", "Cunvon", "Cuvidd", "Cuzokk", "Dahkk", "Dand", "Darf", "Dore", "Drgg", "Febitt", "Femm", "Fepipp", "Fetzk", "Fukk", "Gigg", "Gilil", "Gogrog", "Habilop", "Hoe", "Hokk", "Hoktahokk", "Jebud", "Jeghh", "Jiff", "Jigugg", "Jolokk", "Jon'k", "Jubb", "Juliff", "Jurgg", "Jurghuzz", "Jusogg", "Juzz", "Kalilh", "Kedi", "Kibudekk", "Kilordi", "Kirdi", "Kirr", "Kixahin", "Kokk", "Koli", "Kundibb", "Lagiks", "Lekk", "Leliki", "Less", "Lidd", "Ligg", "Liliff", "Lithelonn", "Lizr", "Logg", "Loss", "Ludd", "Lukk", "Lurr", "Madd", "Magudd", "Migg", "Migrghb", "Mirdiln", "Mirili", "Miskigg", "Mizrbiku", "Molik", "Munuki", "Murdagg", "Naburirb", "Nakk", "Nandi", "Nili", "Nogo", "Nohba", "Nohid", "Obb", "Obuk", "Odordukk", "Ogemagg", "Ogg", "Ongrushk", "Onuvuk", "Orgadd", "Ory", "Ovixali", "Ovizo", "Pavodd", "Purvrp", "Putrebb", "Ranukk", "Roo", "Rorbukk", "Rorenv", "Rukk", "Rukuvr", "Sadajj", "Sardi", "Sikibu", "Sikud", "Songu", "Sonn", "Sovopp", "Succ", "Sury", "Tee", "Thicc", "Tigg", "Tilokk", "Torr", "Tortaho", "Tosunn", "Turr", "Ukk", "Uvutt", "Vargg", "Varr", "Vegidd", "Vemm", "Vodd", "Wiksh", "Wirihi", "Xidd", "Xigba", "Xigit", "Ximukk", "Yajj", "Yigg", "Yitt", "Yolilik", "Yugg", "Yuxx", "Zegubb", "Zikekk", "Zoo", "Zopiketu", "Zuu", "Zy"];
+const lastNames = ["Abekk", "Abrnia", "Aff", "Agekan", "Agg", "Aikr", "Airg", "Aizogg", "Ajiror", "Ak'duhovo", "Akan", "Akiben", "Akipu", "Amokk", "App", "Arikk", "Arott", "Aruvt", "Ashg", "Asuduko", "Asugg", "Asuhibi", "Asul", "Asutikk", "Axulo", "Balz", "Bekakk", "Bidd", "Bikk", "Bivtiss", "Bipp", "Crbenn", "Crbiss", "Crgdbrb", "Crirr", "Cromm", "Crosygg", "Cruhod", "Crur", "Dediga", "Delo", "Desu", "Diss", "Divi", "Dora'fibb", "Dorzoff", "Duu", "Edudz", "Egg", "Ek'agg", "Ek'k", "Ekarboif", "Enukk", "Faba", "Fahobur", "Fanenirr", "Fangg", "Fann", "Fegaboabb", "Fegi", "Feglibo", "Fenurr", "Fetomm", "Fikk", "Firr", "Fishobe", "Fiss", "Fitt", "Fudu", "Fukk", "Furgang", "Fuzbam", "Gaa", "Gabb", "Gagelp", "Gahkk", "Gahl", "Gakk", "Ganabrzz", "Ganikk", "Gapp", "Grgik", "Grpesu", "Ha'he", "Hak", "Haka", "Harb", "Haree", "Hass", "Hatanar", "Hekk", "Heloo", "Herah", "Hevo", "Hiji", "Hikrzz", "Hitt", "Imm", "Imuho", "Jann", "Jed", "Jelipta", "Jobevta", "Jokh", "Jorr", "Kaa", "Kakann", "Karkakan", "Khan", "Khdifngrg", "Khun", "Kodz'fu", "Koff", "Kombavv", "Kranedij", "Ledd", "Likk", "Lilo", "Lipp", "Loree", "Lorr", "Lorz'hl", "Lorzz", "Lushokh", "Mabed'di", "Magodd", "Mane", "Mekk", "Melikoff", "Menn", "Meviss", "Migg", "Miji", "Mobil", "Mobonik", "Morgiss", "Mosygg", "Movupt", "Norr", "Nott", "Obb", "Ogekev", "Ogg", "Ogudilv", "Omoib", "Rapp", "Rekk", "Roo", "Rul'f", "Sangebo", "Sann", "Shan", "Sipp", "Siss", "Soig", "Sokk", "Sorr", "Sostukk", "Sozonge", "Stakk", "Stanika", "Stath", "Sthorr", "Stij", "Straho", "Strn", "Stsuhli", "Tabb", "Tagr", "Tamobeko", "Tapp", "Tebikk", "Tett", "Thott", "Tiduhdu", "Tijorvokk", "Tili", "Tittt", "Tuloo", "Turidi", "Tygg", "Udabel", "Udd", "Udiaba", "Udigg", "Udrbra", "Ududiss", "Udzbo", "Ul'fngg", "Uligg", "Vach", "Vakk", "Varorngg", "Vataba", "Vavenn", "Vobakk", "Vorr", "Votanul", "Yosykk", "Zachg", "Zevil"];
 const genders = ["male", "female"];
 const pronouns = {male:["he", "him", "his"], female:["she", "her", "her"]};
 const solarSystemNodeStatus = {free: "free",occupied: "occupied"};
@@ -168,7 +168,7 @@ var Assets = {
     Kuva_guardians_bodyguards: { tier: 2, type: "personnel", effects: "Lich spawns accompanied by two Kuva Guardians. Guardians occasionally appear in lich missions.", rewards: "Kesheg blueprint, kuva and kuva associated paraphernalia." },
     Beastmaster: { tier: 2, type: "specialist", effects: "Hyekka and Drakk masters are a lot more common, and their beasts are more dangerous.", rewards: "Companion mods, those hyekka/Drakk imprints that the cetus guy sells..." },
     Amalgam_armor: { tier: 2, type: "equipment", effects: "Inspired by the Wolf of Saturn 6, the Lich cobbles together an Amalgam armor. This gives them the same damage adaptation as Sentients. However, this is a crude equipment relying on stolen Corpus tech. Destroy the specialised facilities that maintain it, and this armor will fall apart in short order.", rewards:"Sentient/Amalgam related stuff. Low chance of Wolf's operator cosmetic."},
-    Kuva_seals: { tier: 2, type: "equipment", effects: "A sign of favor from the Queens, this braided seals, normally seen on the Keshegs of Kuva Guardians, make the Lich invulnerable to damage unless knocked away by a void demon.", rewards: "Kuva related stuff." },
+    Kuva_seal: { tier: 2, type: "equipment", effects: "A sign of favor from the Queens, this braided seals, normally seen on the Keshegs of Kuva Guardians, make the Lich invulnerable to damage unless knocked away by a void demon.", rewards: "Kuva related stuff." },
 
     Cybersecurity_expert: { tier: 3, type: "specialist", effects: "Makes hacking in lich missions more difficult (e.g. more pips). Shortens hacking time. Disable the use of ciphers.", rewards: "Parazon mods, spy rewards, a bunch of ciphers." },
     Manics_cloning_tubes: { tier: 3, type: "personnel", effects: "Manics spawn frequently in Lich missions.", rewards: "Ash alt helmets, dagger blueprints and mods..." },
@@ -347,6 +347,11 @@ function generateWeapon(previousWeapon, isReroll) {
         newElement = elementsList[getRndInteger(0, 6)]; //random new element
     }
     while (newWeapon == previousWeapon); //Bad luck protection: can't get same weapon twice in a row.
+
+    if(Lich.epicAsset == "Grave_Hound") //if wolf lite, only melee allowed. Will need serious refactoring if new kuva melees are released.
+    {
+        newWeapon = "Shildeg";
+    }
 
     newBonusDamage = Math.max(25, getRndInteger(1, 10) + getRndInteger(1, 10) + getRndInteger(1, 10) + 5 + 5 * Lich.rank); //Made the bonus damage depend on lich rank.
     //This is 3d10+5+(5*rank), so 3d10+10 to 3d10+30. Averages per rank are 28, 32, 36.5, 41.5, 46.5 before correction. So they'll be higher.
@@ -585,6 +590,11 @@ function successfulPlot()
     alert(EpicAssets[Lich.epicAsset].Description.replace("$LICH_NAME", Lich.name));
     postMessage(EpicAssets[Lich.epicAsset].Description.replace("$LICH_NAME", Lich.name));
     //add sidebar message warning of what happened
+
+    if(Lich.epicAsset == "GraveHound") //if wolf lite, throw away the old weapon to get a melee one.
+    {
+        generateWeapon(true);
+    }
 }
 
 //legacies are shelved for later
@@ -838,6 +848,10 @@ function bountyRaise(dontPost)
 //this is the basic mission. When you run a node normally. No fuss. Nothing special.
 function basicMission(node) {
     if (SolarSystem[node].status == solarSystemNodeStatus.free) {
+        if(Lich.epicAsset == "Grave_Hound") //wolf lite can appear anywhere!
+        {
+            lichEncounter();
+        }
         postMessage(node + " is free of lich activity.")
     }
     else {
@@ -1122,8 +1136,13 @@ function lastStand() {
     else
     {
         var lastStandResults = "Fought " + Lich.name + " in a climactic battle on " + Lich.territory_edges[0] + ", " + SolarSystem[Lich.territory_edges[0]].planet + ".<br>";
+        var victoryChance = 0.9;
+        if (Lich.epicAsset == "Grave_Hound") //epic asset reduces chances of victory
+        {
+            victoryChance = 0.8;
+        }
 
-        if (Math.random() >= 0.1) {
+        if (Math.random() < victoryChance) {
             lastStandResults += "And were victorious!<br>"
             var finalVictory = false;
 
@@ -1324,6 +1343,10 @@ function commonMissionStuff() {
     else {
         var angerGain = getRndInteger(4, 20); //anger is 0-100
         Lich.anger = Math.min(Lich.anger + angerGain, 100);
+        if(Lich.epicAsset == "Grave_Hound" && Lich.anger < 15) //wolf lite is always a little angry
+        {
+            Lich.anger = 15;
+        }
     }
 
 
@@ -1410,8 +1433,14 @@ function lichEncounter() {
         //either way: reduce cost of steal weapon. Minimum of 10% of max cost as of writing this
         Lich.lockStrength = Math.max(Lich.lockStrength-150, 150);
 
+        var victoryChance = 0.9;
+        if (Lich.epicAsset == "Grave_Hound")
+        {
+            victoryChance = 0.8;
+        }
+
         //win/lose, random chance
-        if (Math.random() < 0.9) //90% chance to win
+        if (Math.random() < victoryChance) //90% chance to win
         {
             //win
             encounterResults += "...and won!<br>";
@@ -1699,17 +1728,29 @@ function updateKnownRequiems() {
     }
 
     //now the printing
-    if (unknownReq.length) {
+    if (unknownReq.length) 
+    {
         document.getElementById("modsUnknownDisplay").innerHTML = "The following mods' status is unknown: " + unknownReq.join(", ");
     }
-    else{
+    else
+    {
         document.getElementById("modsUnknownDisplay").innerHTML = "";
     }
-    if (incorrectReq.length) {
+    if (incorrectReq.length) 
+    {
         document.getElementById("modsIncorrectDisplay").innerHTML = "The following mods are incorrect (not in lich requiem): " + incorrectReq.join(", ");
     }
-    if (correctReq.length) {
+    else
+    {
+        document.getElementById("modsIncorrectDisplay").innerHTML = "";
+    }
+    if (correctReq.length) 
+    {
         document.getElementById("modsCorrectDisplay").innerHTML = "The following mods are correct (in the lich requiem): " + correctReq.join(", ");
+    }
+    else
+    {
+        document.getElementById("modsCorrectDisplay").innerHTML = "";
     }
 
 }
@@ -1802,7 +1843,7 @@ window.onload = function () {
     document.getElementById("intelDisplay").value = 0;
     document.getElementById("dayCounter").value = 0;
 
-    alert("This game has been updated! Check the help/FAQ tab for patch notes (all the way at the bottom). \nAlso, this might be a little buggy right now, the update got pushed only yesterday. \nContact me on reddit or discord for feedback and bug reports.")
+    //alert("This game has been updated! Check the help/FAQ tab for patch notes (all the way at the bottom). \nContact me on reddit or discord for feedback and bug reports.")
 }
 
 function switchTabs(tab) {
