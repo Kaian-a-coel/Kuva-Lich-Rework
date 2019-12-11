@@ -557,7 +557,7 @@ function progressPlot()
     }
 
     //new mission whether plot progressed or not.
-    if (Lich.plot.progress >= 25 && Lich.plot.status == "discovered") //25 is how much a setback reduces progress. So this is case where one mission won't reduce progress to zero.
+    if (Lich.plot.progress >= 15 && Lich.plot.status == "discovered") //15 is how much a setback reduces progress. So this is case where one mission won't reduce progress to zero.
     {
         let newMission;
         do
