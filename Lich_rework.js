@@ -1615,6 +1615,7 @@ function updateLichInfo() {
     document.getElementById("lichWeapon").innerText = Lich.weapon;
     document.getElementById("lichElement").innerText = Lich.element + " +" + Lich.bonusDamage + "%";
     document.getElementById("weaponLockStrength").innerText = Lich.lockStrength;
+    document.getElementById("lichEphemera").innerText = Lich.ephemera;
 
     if (weaponBiometricsBroken) {
         document.getElementById("isLockBroken").innerHTML = " Lock broken!";
