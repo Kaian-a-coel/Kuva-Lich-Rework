@@ -1258,6 +1258,7 @@ function lastStand() {
             lastStandResults += "Acquired: +" + Lich.bonusDamage + "% " + Lich.element + " Kuva " + Lich.weapon + ".<br>";
             if (!finalVictory) {
                 generateWeapon(Lich.weapon, true);
+                generateEphemera();
             }
 
             lastStandResults += "Recovered the entirety of " + Lich.name + "'s treasury:<br>"
@@ -1485,7 +1486,7 @@ function updateParazon(node, number) {
     //document.getElementById("debugRequiemEquipped").value = Parazon.requiemEquipped[0]+" "+Parazon.requiemEquipped[1]+" "+Parazon.requiemEquipped[2]; //Debug: remove later
 }
 
-function murmurs() //this is where the computer play Mastermind (for regular encounters);
+function murmurs() //this is where the computer play Mastermind (for regular encounters); //THIS GOT COMPLETELY BROKEN
 {
     const requiemEquipped = Parazon.requiemEquipped;
 
@@ -1528,20 +1529,29 @@ function murmurs() //this is where the computer play Mastermind (for regular enc
                 setStatusForCorrect = setCorrect;
                 setStatusForIncorrect = setIncorrect;
 
-                status1 = !status1;
-                status2 = !status2;
-                status3 = !status3;
+                if(status1 != "?")
+                {
+                    status1 = !status1;
+                }
+                if(status2 != "?")
+                {
+                    status2 = !status2;
+                }
+                if(status3 != "?")
+                {
+                    status3 = !status3;
+                }
             }
 
-            if (status1) {
+            if (status1 === true) {
                 setStatusForCorrect(requiem2);
                 setStatusForCorrect(requiem3);
             }
-            else if (status2) {
+            else if (status2 === true) {
                 setStatusForCorrect(requiem1);
                 setStatusForCorrect(requiem3);
             }
-            else if (status3) {
+            else if (status3 === true) {
                 setStatusForCorrect(requiem1);
                 setStatusForCorrect(requiem2);
             }
@@ -1616,6 +1626,7 @@ function updateLichInfo() {
     document.getElementById("lichElement").innerText = Lich.element + " +" + Lich.bonusDamage + "%";
     document.getElementById("weaponLockStrength").innerText = Lich.lockStrength;
     document.getElementById("lichEphemera").innerText = Lich.ephemera;
+
 
     if (weaponBiometricsBroken) {
         document.getElementById("isLockBroken").innerHTML = " Lock broken!";
